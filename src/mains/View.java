@@ -1,9 +1,13 @@
 package mains;
 
-import initial.InitView;
+import views.InitView;
 
-public final class View {
-    public View(Controller cont, Model model){
-        InitView initView = new InitView(cont);
+public class View {
+    protected InitView initView;
+    protected View(){}
+
+    public View(Controller cont){
+        initView = new InitView(cont);
+
     }
 }
