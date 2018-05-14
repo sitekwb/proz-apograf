@@ -1,8 +1,11 @@
 package mains;
 
 import additional.ConnException;
+import people.*;
 
 import java.sql.*;
+import java.util.Properties;
+
 
 import static additional.ConnException.ErrorTypes.*;
 
@@ -21,13 +24,13 @@ public class Model {
      * and compares it with data given by user (mail and password).
      *
      * Method implemented in this class method openConnection
-     * @see #openConnection(String, String)
+     * @see #logIn(String, String)
      *
      * @param mail e-mail adress entered by user in the InitialView
      * @param enteredPassword pass entered by user in view
      * @return type of user (enum) - admin, teacher or student. On this depends type of downloaded data
      * and consequently view
-     * @throws ConnException informs View module about type of error occuring
+     * @throws ConnException informs InitView module about type of error occuring
      * (connection with database, wrong mail, wrong password)
      * @throws SQLException if the process of connection with database breaks, then this exception is thrown
      */
@@ -35,23 +38,15 @@ public class Model {
         String pass,query;
 
         PreparedStatement statement;
-        query = "SELECT password FROM ? WHERE mail='?' LIMIT 1;";
+        query = "SELECT password ? FROM ? WHERE mail='?' LIMIT 1;";
         statement = conn.prepareStatement(query);
-        statement.setString(2,mail);
+        statement.setString(3,mail);
 
         ResultSet result;
 
-        //TEACHER - checking if logging user is a teacher
-        statement.setString(1,"Teachers");
-        result = statement.executeQuery();
-        if(result.next()){//if something was found
-            pass = result.getString("password");
-            if(pass.equals(enteredPassword)) return UserType.teacher;
-            //if pass from database doesn't equal entered password
-            throw new ConnException(wrongPass);
-        }
         //STUDENT
-        statement.setString(1,"Students");
+        statement.setString(1,"");
+        statement.setString(2,"Students");
         result = statement.executeQuery();
         if(result.next()){//if something was found
             pass = result.getString("password");
@@ -59,12 +54,19 @@ public class Model {
             //if pass from database doesn't equal entered password
             throw new ConnException(wrongPass);
         }
-        //ADMIN
-        statement.setString(1,"Admins");
+        //TEACHER - checking if logging user is a teacher or admin
+        statement.setString(1,",admin");
+        statement.setString(2,"Teachers");
         result = statement.executeQuery();
         if(result.next()){//if something was found
             pass = result.getString("password");
-            if(pass.equals(enteredPassword)) return UserType.admin;
+            if(pass.equals(enteredPassword)) {
+                if(result.getBoolean("admin")){
+                    return UserType.admin;
+                }
+                return UserType.teacher;
+            }
+
             //if pass from database doesn't equal entered password
             throw new ConnException(wrongPass);
         }
@@ -77,24 +79,84 @@ public class Model {
      * @throws SQLException if something goes wrong with closing connection, the exception is thrown
      */
     public void closeConnection()throws SQLException{
-        conn.close();
+        if(conn!=null&& !conn.isClosed()) conn.close();
     }
-    public void openConnection(String mail, String pass)throws ConnException{
+    private void openDatabaseConnection()throws SQLException{
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/apograf", "root", "xxx");//jdbc:mysql://localhost:3306
+    }
+    public void logIn(String mail, String pass)throws ConnException{
         try {
-            //getting connection with database
-            conn = DriverManager.getConnection("jdbc:mysql://localhost", "root", "xxx");
-            stat = conn.createStatement();
-            stat.execute("USE apograf;");
-
+            openDatabaseConnection();
             //check if user has given the right data
             userType = checkUser(mail, pass);
-
-
-            //TODO download personal data
+            //download personal data
+            PreparedStatement prepSt = conn.prepareStatement("SELECT * FROM ? WHERE mail=? LIMIT 1;");
+            prepSt.setString(2,mail);
+            Person me;
+            switch(userType){
+                case teacher:
+                    prepSt.setString(1,"Teachers");
+                    me = new Teacher(prepSt.executeQuery());
+                    break;
+                case admin:
+                    prepSt.setString(1,"Teachers");
+                    me =new Admin(prepSt.executeQuery());
+                    break;
+                case student:default:
+                    prepSt.setString(1,"Students");
+                    me = new Student(prepSt.executeQuery());
+            }
+            prepSt.close();
         }
         catch(SQLException e){
             throw new ConnException(err);
         }
     }
+    public void register(String mail, String pass)throws ConnException{
+        try {
+            openDatabaseConnection();
 
+            ResultSet result;
+            PreparedStatement statement;
+            String query = "SELECT mail FROM ? WHERE mail=? LIMIT 1;";
+            statement = conn.prepareStatement(query);
+            statement.setString(2,mail);
+
+            //TEACHERS - checking if there is mail existing in database
+            statement.setString(1,"Teachers");
+            result = statement.executeQuery();
+            if(result.next()){
+                throw new ConnException(existing);
+            }
+            //STUDENTS
+            statement.setString(1,"Students");
+            result = statement.executeQuery();
+            if(result.next()){
+                throw new ConnException(existing);
+            }
+            //ADMINS
+            statement.setString(1,"Admins");
+            result = statement.executeQuery();
+            if(result.next()){
+                throw new ConnException(existing);
+            }
+            //WAITING
+            statement.setString(1,"Waiting");
+            result = statement.executeQuery();
+            if(result.next()){
+                throw new ConnException(existing);
+            }
+            statement.close();
+            //enter this mail and password into waiting
+            Statement stmt=conn.createStatement();
+            stmt.executeUpdate("INSERT INTO Waiting VALUES ("+mail+", "+pass+");");
+            stmt.close();
+        } catch (SQLException e) {
+            throw new ConnException(err);
+        }
+    }
+
+    public UserType getUserType(){
+        return userType;
+    }
 }

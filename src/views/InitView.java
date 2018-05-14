@@ -17,16 +17,14 @@ import java.awt.event.ActionListener;
  * which functions are:
  * <ul>
  *     <li>Asking the user for e-mail and password for logging or registration.</li>
- *     <li>Giving information about login and password to cont (class Controller), implemented in method actionPerformed
+ *     <li>Giving information about login and password to cont (class InitController), implemented in method actionPerformed
  * @link InitView#actionPerformed(ActionEvent e)
  *     </li>
  * </ul>
  *
  */
-public class InitView extends JFrame implements ActionListener {
+public class InitView extends JFrame {
     /**
-     * @param cont reference to object of class Controller from MVC model of programming in Java.
-     *             Used in sending information
      * @param title JLabel with name of program - "Apograf"
      * @param mailLabel JLabel specifying aim of e-mail textField on the right, with its text "E-mail:"
      * @param passLabel JLabel specifying aim of password textField on the right, with its text "Password:"
@@ -36,8 +34,7 @@ public class InitView extends JFrame implements ActionListener {
      * @param registerButton button, submitting information about registration to database to controller
      * @param errLabel normally empty label, showing errors of logging or registration
      */
-
-    private Controller cont;
+    private static String secretCode = "abcd";
     private JButton logButton;
     private JTextField mailField;
     private JLabel mailLabel;
@@ -47,13 +44,36 @@ public class InitView extends JFrame implements ActionListener {
     private JLabel title;
     private JLabel errLabel;
 
+    public JTextField getMailField(String sCode) {//throws Exception{
+        //if(!sCode.equals(secretCode)) throw new Exception();
+        return mailField;
+    }
+    public JPasswordField getPasswordField(String sCode) {//throws Exception{
+        //if(!sCode.equals(secretCode)) throw new Exception();
+        return passField;
+    }
+    public JButton getRegisterButton(String sCode) {//throws Exception{
+        //if(!sCode.equals(secretCode)) throw new Exception();
+        return registerButton;
+    }
+    public JButton getLogButton(String sCode) {//throws Exception{
+        //if(!sCode.equals(secretCode)) throw new Exception();
+        return logButton;
+    }
+    public JLabel getErrLabel() {
+        return errLabel;
+    }
+
+
+
+
+
     /**
      * Class constructor
-     * @param controller reference to controller got from main class View, used later in method #actionPerformed
+     *
      */
-    public InitView(Controller controller){
+    public InitView(){
         super("Logging window");
-        cont = controller;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -92,11 +112,9 @@ public class InitView extends JFrame implements ActionListener {
 
         registerButton.setText("Register");
         registerButton.setFont(new Font("Times New Roman", Font.PLAIN, 40));
-        registerButton.addActionListener(this);
 
         logButton.setText("Log in");
         logButton.setFont(new Font("Times New Roman", Font.PLAIN, 40));
-        logButton.addActionListener(this);
 
         errLabel.setHorizontalAlignment(JLabel.CENTER);
         errLabel.setFont(new Font("Arial", Font.PLAIN, 40));
@@ -153,39 +171,5 @@ public class InitView extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-    /**
-     *
-     * @param e event, that has been performed - either from logButton (order to log in)
-     *          or from registerButton (order to register)
-     */
-    public void actionPerformed (ActionEvent e){
-        String mail = mailField.getText();
-        String pass = String.valueOf(passField.getPassword());
-        if(e.getSource()==registerButton){
-            try{
-                cont.register(mail , pass);
-                errLabel.setText("Registration success. In this instance of program you cannot register more.");
-                mailField.setText("");
-                passField.setText("");
-                registerButton.setVisible(false);
-            }
-            catch(ConnException exception){
-                errLabel.setText("Registration error. Try again.");
-                mailField.setText("");
-                passField.setText("");
-            }
-        }
-        else if(e.getSource()==logButton){
-            try{
-                cont.logIn(mail, pass);
-                setVisible(false);
 
-            }
-            catch(ConnException exception){
-                errLabel.setText(exception.getErrorMessage()+" Try again.");
-                mailField.setText("");
-                passField.setText("");
-            }
-        }
-    }
 }
