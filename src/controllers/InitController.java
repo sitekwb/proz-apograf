@@ -40,7 +40,7 @@ public class InitController implements ActionListener {
             if (e.getSource() == v.getRegisterButton(code)) {
                 try {
                     model.register(mail, pass);
-                    v.getErrLabel().setText("Registration success. Wait for admin approval. In this instance of program you cannot register more.");
+                    v.getErrLabel().setText("Registration success. In this instance you can't register more.");
                     v.getMailField(code).setText("");
                     v.getPasswordField(code).setText("");
                     v.getRegisterButton(code).setVisible(false);
@@ -60,13 +60,15 @@ public class InitController implements ActionListener {
                 } catch (ConnException exception) {
                     model.closeConnection(); //throws SQLException
                     v.getErrLabel().setText(exception.getErrorMessage() + " Try again.");
-                    v.getMailField(code).setText("");
                     v.getPasswordField(code).setText("");
                 }
             }
         }
         catch (SQLException sqlException){
             v.getErrLabel().setText("Problems with database connection. Try again");
+        }
+        catch (Exception wrongCodeException){
+            v.getErrLabel().setText("Critical error. Try restarting application");
         }
         //catch(Exception wrongCodeException){
             //v.getErrLabel().setText("Critical error. Try restarting application");

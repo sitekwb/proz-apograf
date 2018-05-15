@@ -44,15 +44,15 @@ public class InitView extends JFrame {
     private JLabel title;
     private JLabel errLabel;
 
-    public JTextField getMailField(String sCode) {//throws Exception{
-        //if(!sCode.equals(secretCode)) throw new Exception();
+    public JTextField getMailField(String sCode) throws Exception{//throws Exception{
+        if(!sCode.equals(secretCode)) throw new Exception();
         return mailField;
     }
-    public JPasswordField getPasswordField(String sCode) {//throws Exception{
-        //if(!sCode.equals(secretCode)) throw new Exception();
+    public JPasswordField getPasswordField(String sCode) throws Exception{//throws Exception{
+        if(!sCode.equals(secretCode)) throw new Exception();
         return passField;
     }
-    public JButton getRegisterButton(String sCode) {//throws Exception{
+    public JButton getRegisterButton(String sCode) throws Exception{//throws Exception{
         //if(!sCode.equals(secretCode)) throw new Exception();
         return registerButton;
     }
@@ -117,7 +117,7 @@ public class InitView extends JFrame {
         logButton.setFont(new Font("Times New Roman", Font.PLAIN, 40));
 
         errLabel.setHorizontalAlignment(JLabel.CENTER);
-        errLabel.setFont(new Font("Arial", Font.PLAIN, 40));
+        errLabel.setFont(new Font("Arial", Font.PLAIN, 35));
         errLabel.setForeground(Color.RED);
 
 

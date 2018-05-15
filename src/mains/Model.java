@@ -14,6 +14,7 @@ public class Model {
     private Statement stat;
     public enum UserType{admin, student, teacher};
     private UserType userType;
+    Person me;
     public Model() {
 
 
@@ -34,45 +35,40 @@ public class Model {
      * (connection with database, wrong mail, wrong password)
      * @throws SQLException if the process of connection with database breaks, then this exception is thrown
      */
-    UserType checkUser(String mail, String enteredPassword)throws ConnException, SQLException {
-        String pass,query;
+UserType checkUser(String mail, String enteredPassword)throws ConnException, SQLException {
+    String pass, query;
+    ResultSet result;
+    Statement statement = conn.createStatement();
 
-        PreparedStatement statement;
-        query = "SELECT password ? FROM ? WHERE mail='?' LIMIT 1;";
-        statement = conn.prepareStatement(query);
-        statement.setString(3,mail);
+    //STUDENT
+    query = "SELECT pass FROM Students WHERE mail='" + mail + "' LIMIT 1;";
 
-        ResultSet result;
-
-        //STUDENT
-        statement.setString(1,"");
-        statement.setString(2,"Students");
-        result = statement.executeQuery();
-        if(result.next()){//if something was found
-            pass = result.getString("password");
-            if(pass.equals(enteredPassword)) return UserType.student;
-            //if pass from database doesn't equal entered password
-            throw new ConnException(wrongPass);
-        }
-        //TEACHER - checking if logging user is a teacher or admin
-        statement.setString(1,",admin");
-        statement.setString(2,"Teachers");
-        result = statement.executeQuery();
-        if(result.next()){//if something was found
-            pass = result.getString("password");
-            if(pass.equals(enteredPassword)) {
-                if(result.getBoolean("admin")){
-                    return UserType.admin;
-                }
-                return UserType.teacher;
-            }
-
-            //if pass from database doesn't equal entered password
-            throw new ConnException(wrongPass);
-        }
-        //if e-mail was not found in any database => throw not-existing exception
-        throw new ConnException(notExitsting);
+    result = statement.executeQuery(query);
+    if (result.next()) {//if something was found
+        pass = result.getString("pass");
+        if (pass.equals(enteredPassword))
+            return UserType.student;
+        //if pass from database doesn't equal entered password
+        throw new ConnException(wrongPass);
     }
+    //TEACHER - checking if logging user is a teacher or admin
+    query = "SELECT pass,admin FROM Teachers WHERE mail='" + mail + "' LIMIT 1;";
+    result = statement.executeQuery(query);
+    if (result.next()) {//if something was found
+        pass = result.getString("password");
+        if (pass.equals(enteredPassword)) {
+            if (result.getBoolean("admin")) {
+                return UserType.admin;
+            }
+            return UserType.teacher;
+        }
+
+        //if pass from database doesn't equal entered password
+        throw new ConnException(wrongPass);
+    }
+    //if e-mail was not found in any database => throw not-existing exception
+    throw new ConnException(notExitsting);
+}
 
     /**
      * Closes connection with database
@@ -82,7 +78,7 @@ public class Model {
         if(conn!=null&& !conn.isClosed()) conn.close();
     }
     private void openDatabaseConnection()throws SQLException{
-        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/apograf", "root", "xxx");//jdbc:mysql://localhost:3306
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/apograf", "access", "xxxx");
     }
     public void logIn(String mail, String pass)throws ConnException{
         try {
@@ -90,23 +86,22 @@ public class Model {
             //check if user has given the right data
             userType = checkUser(mail, pass);
             //download personal data
-            PreparedStatement prepSt = conn.prepareStatement("SELECT * FROM ? WHERE mail=? LIMIT 1;");
-            prepSt.setString(2,mail);
-            Person me;
+            Statement statement = conn.createStatement();
+            String query;
             switch(userType){
                 case teacher:
-                    prepSt.setString(1,"Teachers");
-                    me = new Teacher(prepSt.executeQuery());
+                    query = "SELECT * FROM Teachers WHERE mail='"+mail+"' LIMIT 1;";
+                    me = new Teacher(statement.executeQuery(query));
                     break;
                 case admin:
-                    prepSt.setString(1,"Teachers");
-                    me =new Admin(prepSt.executeQuery());
+                    query = "SELECT * FROM Teachers WHERE mail='"+mail+"' LIMIT 1;";
+                    me = new Admin(statement.executeQuery(query));
                     break;
                 case student:default:
-                    prepSt.setString(1,"Students");
-                    me = new Student(prepSt.executeQuery());
+                    query = "SELECT * FROM Students WHERE mail='"+mail+"' LIMIT 1;";
+                    me = new Student(statement.executeQuery(query));
             }
-            prepSt.close();
+            statement.close();
         }
         catch(SQLException e){
             throw new ConnException(err);
@@ -117,39 +112,30 @@ public class Model {
             openDatabaseConnection();
 
             ResultSet result;
-            PreparedStatement statement;
-            String query = "SELECT mail FROM ? WHERE mail=? LIMIT 1;";
-            statement = conn.prepareStatement(query);
-            statement.setString(2,mail);
-
+            Statement statement = conn.createStatement();
+            String query = "SELECT mail FROM Teachers WHERE mail='"+mail+"' LIMIT 1;";
             //TEACHERS - checking if there is mail existing in database
-            statement.setString(1,"Teachers");
-            result = statement.executeQuery();
+
+            result = statement.executeQuery(query);
             if(result.next()){
                 throw new ConnException(existing);
             }
             //STUDENTS
-            statement.setString(1,"Students");
-            result = statement.executeQuery();
-            if(result.next()){
-                throw new ConnException(existing);
-            }
-            //ADMINS
-            statement.setString(1,"Admins");
-            result = statement.executeQuery();
+            query = "SELECT mail FROM Students WHERE mail='"+mail+"' LIMIT 1;";
+            result = statement.executeQuery(query);
             if(result.next()){
                 throw new ConnException(existing);
             }
             //WAITING
-            statement.setString(1,"Waiting");
-            result = statement.executeQuery();
+            query = "SELECT mail FROM Waiting WHERE mail='"+mail+"' LIMIT 1;";
+            result = statement.executeQuery(query);
             if(result.next()){
                 throw new ConnException(existing);
             }
             statement.close();
             //enter this mail and password into waiting
             Statement stmt=conn.createStatement();
-            stmt.executeUpdate("INSERT INTO Waiting VALUES ("+mail+", "+pass+");");
+            stmt.executeUpdate("INSERT INTO Waiting (mail, pass) VALUES ('"+mail+"', '"+pass+"');");
             stmt.close();
         } catch (SQLException e) {
             throw new ConnException(err);
