@@ -1,20 +1,24 @@
 package controllers;
 
+import init.InitController;
 import mains.Model;
 
 public class Controller {
     private Model model;
+    private InitController initController;
     public Controller(Model mod) {
         model=mod;
-        InitController initController = new InitController(this, model);
+        initController = new InitController(this, model);
     }
 
     protected Controller() {
 
     }
-
-    public void startController(Model.UserType type) {
-        switch (type) {
+    public void signOut(){
+        initController.startViewAgain();
+    }
+    public void startController() {
+        switch (model.getUserType()) {
             case student:
                 StudentController studentController = new StudentController(this, model);
                 break;

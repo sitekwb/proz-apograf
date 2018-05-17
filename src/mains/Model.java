@@ -1,6 +1,7 @@
 package mains;
 
 import additional.ConnException;
+import com.mysql.jdbc.ConnectionFeatureNotAvailableException;
 import people.*;
 
 import java.sql.*;
@@ -11,7 +12,6 @@ import static additional.ConnException.ErrorTypes.*;
 
 public class Model {
     private Connection conn;
-    private Statement stat;
     public enum UserType{admin, student, teacher};
     private UserType userType;
     Person me;
@@ -81,6 +81,9 @@ UserType checkUser(String mail, String enteredPassword)throws ConnException, SQL
         conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/apograf", "access", "xxxx");
     }
     public void logIn(String mail, String pass)throws ConnException{
+        if(isHacker(mail) || isHacker(pass)){
+            throw new ConnException(hacker);
+        }
         try {
             openDatabaseConnection();
             //check if user has given the right data
@@ -91,11 +94,11 @@ UserType checkUser(String mail, String enteredPassword)throws ConnException, SQL
             switch(userType){
                 case teacher:
                     query = "SELECT * FROM Teachers WHERE mail='"+mail+"' LIMIT 1;";
-                    me = new Teacher(statement.executeQuery(query));
+                    //me = new Teacher(statement.executeQuery(query));
                     break;
                 case admin:
                     query = "SELECT * FROM Teachers WHERE mail='"+mail+"' LIMIT 1;";
-                    me = new Admin(statement.executeQuery(query));
+                    //me = new Admin(statement.executeQuery(query));
                     break;
                 case student:default:
                     query = "SELECT * FROM Students WHERE mail='"+mail+"' LIMIT 1;";
@@ -107,32 +110,43 @@ UserType checkUser(String mail, String enteredPassword)throws ConnException, SQL
             throw new ConnException(err);
         }
     }
+
+    private boolean isMailInDatabase(String mail)throws SQLException{
+        ResultSet result;
+        Statement statement = conn.createStatement();
+        String query = "SELECT mail FROM Teachers WHERE mail='"+mail+"' LIMIT 1;";
+        //TEACHERS - checking if there is mail existing in database
+
+        result = statement.executeQuery(query);
+        if(result.next()){
+            return true; //mail is just in database
+        }
+        //STUDENTS
+        query = "SELECT mail FROM Students WHERE mail='"+mail+"' LIMIT 1;";
+        result = statement.executeQuery(query);
+        if(result.next()){
+            return true;
+        }
+        //WAITING
+        query = "SELECT mail FROM Waiting WHERE mail='"+mail+"' LIMIT 1;";
+        result = statement.executeQuery(query);
+        if(result.next()){
+            return true;
+        }
+        statement.close();
+        return false;
+    }
+
     public void register(String mail, String pass)throws ConnException{
+        if(isHacker(mail) || isHacker(pass)){
+            throw new ConnException(hacker);
+        }
         try {
             openDatabaseConnection();
 
-            ResultSet result;
-            Statement statement = conn.createStatement();
-            String query = "SELECT mail FROM Teachers WHERE mail='"+mail+"' LIMIT 1;";
-            //TEACHERS - checking if there is mail existing in database
-
-            result = statement.executeQuery(query);
-            if(result.next()){
+            if(isMailInDatabase(mail)){
                 throw new ConnException(existing);
             }
-            //STUDENTS
-            query = "SELECT mail FROM Students WHERE mail='"+mail+"' LIMIT 1;";
-            result = statement.executeQuery(query);
-            if(result.next()){
-                throw new ConnException(existing);
-            }
-            //WAITING
-            query = "SELECT mail FROM Waiting WHERE mail='"+mail+"' LIMIT 1;";
-            result = statement.executeQuery(query);
-            if(result.next()){
-                throw new ConnException(existing);
-            }
-            statement.close();
             //enter this mail and password into waiting
             Statement stmt=conn.createStatement();
             stmt.executeUpdate("INSERT INTO Waiting (mail, pass) VALUES ('"+mail+"', '"+pass+"');");
@@ -141,8 +155,79 @@ UserType checkUser(String mail, String enteredPassword)throws ConnException, SQL
             throw new ConnException(err);
         }
     }
-
+    public Person getMe(){
+        return me;
+    }
     public UserType getUserType(){
         return userType;
+    }
+
+    public void signOut(){
+        try {
+            conn.close();
+        }
+        catch(SQLException e){
+            conn=null;
+        }
+    }
+
+    public void changePass(String newPassword) throws SQLException, ConnException{
+        if(isHacker(newPassword)){
+            throw new ConnException(hacker);
+        }
+        Statement stat;
+        stat = conn.createStatement();
+        String table;
+        if(userType==UserType.student) {
+            table = "Students";
+        }
+        else{
+            table = "Teachers";
+        }
+        stat.executeUpdate("UPDATE "+table+" SET pass='"+newPassword+"' WHERE id = "+me.getId()+";");
+        stat.close();
+    }
+
+    private static boolean isHacker(String value){
+        if(value.contains("'") || value.contains(";")){
+            return true;
+        }
+        return false;
+    }
+    private void update(String value) throws SQLException, ConnException{
+        if(isHacker(value)){
+            throw new ConnException(hacker);
+        }
+        Statement stat;
+        stat = conn.createStatement();
+        String table;
+        if(userType==UserType.student) {
+            table = "Students";
+        }
+        else{
+            table = "Teachers";
+        }
+        stat.executeUpdate("UPDATE "+table+" SET pass='"+value+"' WHERE id = "+me.getId()+";");
+        stat.close();
+    }
+    public void changeMail(String mail)throws SQLException,ConnException{
+        if(isMailInDatabase(mail)){
+            throw new ConnException(existing);
+        }
+        update(mail);
+    }
+    public void changeName(String name)throws SQLException,ConnException{
+        update(name);
+    }
+    public void askForChange(String name, String type)throws SQLException,ConnException{
+        if(isHacker(name) || isHacker(type)){
+            throw new ConnException(hacker);
+        }
+        Statement stat;
+        stat = conn.createStatement();
+        String table;
+        stat.executeUpdate("INSERT INTO Waiting (mail, pass, type) VALUES ( '"+
+                me.getMail()+"','"+name+"','"+type+"');");
+        stat.close();
     }
 }

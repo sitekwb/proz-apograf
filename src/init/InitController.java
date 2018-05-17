@@ -1,8 +1,8 @@
-package controllers;
+package init;
 
 import additional.ConnException;
+import controllers.Controller;
 import mains.Model;
-import views.InitView;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,6 +26,10 @@ public class InitController implements ActionListener {
         }
     }
 
+    public void startViewAgain(){
+        v.setVisible(true);
+    }
+
     /**
      * Method actionPerformed - manages actions made by user in InitView - order to log in or to register
      *
@@ -41,7 +45,6 @@ public class InitController implements ActionListener {
                 try {
                     model.register(mail, pass);
                     v.getErrLabel().setText("Registration success. In this instance you can't register more.");
-                    v.getMailField(code).setText("");
                     v.getPasswordField(code).setText("");
                     v.getRegisterButton(code).setVisible(false);
                 } catch (ConnException exception) {
@@ -55,8 +58,10 @@ public class InitController implements ActionListener {
                 try {
                     model.logIn(mail, pass);
                     v.setVisible(false);
+                    v.getMailField(code).setText("");
+                    v.getPasswordField(code).setText("");
                     //starts new controller, which envokes next windows and functions of application
-                    cont.startController(model.getUserType());
+                    cont.startController();
                 } catch (ConnException exception) {
                     model.closeConnection(); //throws SQLException
                     v.getErrLabel().setText(exception.getErrorMessage() + " Try again.");

@@ -1,4 +1,4 @@
-package views;
+package init;
 
 import additional.ConnException;
 import mains.*;

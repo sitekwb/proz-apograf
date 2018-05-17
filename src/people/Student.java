@@ -4,8 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Student extends Person {
-    private int id, student_id;
-    private String name, group;
+    private int student_id;
+    private String group;
 
     public Student (ResultSet result) throws SQLException{
         result.next();
@@ -17,15 +17,10 @@ public class Student extends Person {
         group = result.getString("class");
     }
 
-    public Student(boolean admin, ResultSet result) throws SQLException{
+    public Student(boolean adminAccess, ResultSet result) throws SQLException{
 
     }
-    public int getId(){
-        return id;
-    }
-    public String getName(){
-        return name;
-    }
-
+    public String getStudentID(){return String.valueOf(student_id);}
+    public String getGroup(){ return group;}
 
 }

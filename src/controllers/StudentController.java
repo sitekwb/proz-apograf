@@ -1,16 +1,19 @@
 package controllers;
 
 import mains.Model;
-import views.WindowPattern;
+import profile.ProfileController;
+import views.Window;
 
-import javax.naming.ldap.Control;
-
-class StudentController {
+class StudentController extends PersonController {
     Model model;
-    Controller cont;
     public StudentController(Controller controller, Model mod){
-        model = mod;
         cont = controller;
+        model = mod;
+        window = new Window();
+        try {
+            ProfileController profileController = new ProfileController(this, model);
+        }catch(Exception e){
 
+        }
     }
 }

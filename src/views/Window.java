@@ -1,8 +1,9 @@
 package views;
 
 import javax.swing.*;
+import java.awt.*;
 
-public class WindowPattern extends JFrame {
+public class Window extends JFrame {
     private javax.swing.JMenuBar MenuBar;
     private javax.swing.JMenu ModulesMenu;
     private javax.swing.JMenu attendanceMenu;
@@ -22,8 +23,11 @@ public class WindowPattern extends JFrame {
     private javax.swing.JMenuItem viewAttendanceButton;
     private javax.swing.JMenuItem viewProfileButton;
 
+    public void setInternalFrame(JInternalFrame internalFrame){
+        moduleFrame = internalFrame;
+    }
 
-    public WindowPattern(){
+    public Window(){
 
         moduleFrame = new javax.swing.JInternalFrame();
         refreshInfoLabel = new javax.swing.JLabel();
@@ -43,6 +47,12 @@ public class WindowPattern extends JFrame {
         profileMenu = new javax.swing.JMenu();
         viewProfileButton = new javax.swing.JMenuItem();
         chPassButton = new javax.swing.JMenuItem();
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        setBounds(0,0,(int)screenSize.getWidth()*3/4,(int)screenSize.getHeight()*3/4);
+        setMinimumSize(new Dimension((int)screenSize.getWidth()*3/4,(int)screenSize.getHeight()*3/4));
+        setMaximumSize(new Dimension((int)screenSize.getWidth()*3/4,(int)screenSize.getHeight()*3/4));
+
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
