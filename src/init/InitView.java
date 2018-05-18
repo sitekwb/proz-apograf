@@ -1,12 +1,7 @@
 package init;
 
-import additional.ConnException;
-import mains.*;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * @author Wojciech Sitek

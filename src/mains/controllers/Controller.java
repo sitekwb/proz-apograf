@@ -1,4 +1,4 @@
-package controllers;
+package mains.controllers;
 
 import init.InitController;
 import mains.Model;

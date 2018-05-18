@@ -1,4 +1,4 @@
-package additional;
+package exceptions;
 
 public class ConnException extends Exception {
     private static String messages []= {"You entered wrong password.","Account is not existing.",

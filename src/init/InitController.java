@@ -1,7 +1,7 @@
 package init;
 
-import additional.ConnException;
-import controllers.Controller;
+import exceptions.ConnException;
+import mains.controllers.Controller;
 import mains.Model;
 
 import java.awt.event.ActionEvent;

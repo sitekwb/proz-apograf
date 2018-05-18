@@ -1,12 +1,11 @@
-package controllers;
+package mains.controllers;
 
 import mains.Model;
 
 class TeacherController  extends PersonController{
-    Model model;
     public TeacherController(Controller controller, Model mod){
-        model = mod;
-        cont = controller;
+        super(controller, mod);
+
 
     }
 

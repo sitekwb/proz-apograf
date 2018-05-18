@@ -1,14 +1,12 @@
 package mains;
 
-import additional.ConnException;
-import com.mysql.jdbc.ConnectionFeatureNotAvailableException;
+import exceptions.ConnException;
 import people.*;
 
 import java.sql.*;
-import java.util.Properties;
 
 
-import static additional.ConnException.ErrorTypes.*;
+import static exceptions.ConnException.ErrorTypes.*;
 
 public class Model {
     private Connection conn;
@@ -163,6 +161,8 @@ UserType checkUser(String mail, String enteredPassword)throws ConnException, SQL
     }
 
     public void signOut(){
+        me=null;
+        userType=null;
         try {
             conn.close();
         }

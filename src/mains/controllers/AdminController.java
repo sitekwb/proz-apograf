@@ -1,5 +1,5 @@
 
-package controllers;
+package mains.controllers;
 
 import mains.Model;
 
@@ -7,8 +7,8 @@ import mains.Model;
 class AdminController  extends PersonController {
     Model model;
     public AdminController(Controller controller, Model mod){
-        model = mod;
-        cont = controller;
+        super(controller, mod);
+
         //TODO
     }
 }

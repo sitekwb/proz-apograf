@@ -1,7 +1,11 @@
-package profile;
+package internalframes.profile;
+
+import exceptions.ConnException;
 
 import javax.swing.*;
 import java.awt.*;
+
+import static exceptions.ConnException.ErrorTypes.err;
 
 public class ProfileView extends JInternalFrame {
     private javax.swing.JButton jButton[];
@@ -9,36 +13,50 @@ public class ProfileView extends JInternalFrame {
     private javax.swing.JTextField jTextField[];
     private javax.swing.JLabel title;
     private static String secretCode = "xxxx";
-    JButton getButton(int i, String code) throws Exception{
-        if(!code.equals(secretCode) || i>4 || i<0) throw new Exception();
+    JButton getButton(int i) throws ConnException{
+        if(i>4 || i<0) throw new ConnException(err);
         return jButton[i];
     }
-    JTextField getTextField(int i, String code) throws Exception{
-        if(!code.equals(secretCode) || i>4 || i<0) throw new Exception();
+    JTextField getTextField(int i)throws ConnException{
+        if(i>4 || i<0) throw new ConnException(err);
         return jTextField[i];
     }
-    JLabel getLabel(int i, String code) throws Exception{
-        if(!code.equals(secretCode) || i>4 || i<0) throw new Exception();
+    JLabel getLabel(int i) throws ConnException{
+        if(i>4 || i<0) throw new ConnException(err);
         return jLabel[i];
     }
 
     public ProfileView(){
-
+        super("My data");
         title = new javax.swing.JLabel();
 
         jLabel = new JLabel [5] ;
         jTextField = new JTextField[5];
         jButton = new JButton[5];
 
+        GridLayout layout = new GridLayout(6,3);
+        setLayout(layout);
 
         title.setText("PROFILE");
+        add(title);
+        for(int i=0;i<5;i++){
+            jLabel[i]=new JLabel();
+            add(jLabel[i]);
 
+            jTextField[i]=new JTextField();
+            add(jTextField[i]);
+
+            jButton[i]=new JButton();
+            add(jButton[i]);
+        }
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(0,0,(int)screenSize.getWidth()*3/4,(int)screenSize.getHeight()*3/4);
         setMinimumSize(new Dimension((int)screenSize.getWidth()*3/4,(int)screenSize.getHeight()*3/4));
-        setMaximumSize(new Dimension((int)screenSize.getWidth()*3/4,(int)screenSize.getHeight()*3/4));
+        setMaximumSize(new Dimension((int)screenSize.getWidth(),(int)screenSize.getHeight()));
 
+
+/*
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -115,6 +133,7 @@ public class ProfileView extends JInternalFrame {
                                         .addComponent(jButton[4], javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addContainerGap(198, Short.MAX_VALUE))
         );
+        */
         setVisible(true);
     }
 
