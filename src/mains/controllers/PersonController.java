@@ -12,63 +12,56 @@ import views.Window;
 import views.Window.MenuButtons;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class PersonController implements ActionListener {
     protected Model model;
-    protected Window window;
+    protected WelcomeView welcomeView;
     protected Controller cont;
-    protected String c = "abcd";
-
-    public PersonController(Controller controller, Model mod){
+    protected Window window;
+    public PersonController(Controller controller, Model mod) {
         cont = controller;
         model = mod;
-        window = new Window();
-        WelcomeView welcomeView = new WelcomeView();
-        window.setInternalFrame(welcomeView);
-        try {
-            for (int i = 0; i < Window.buttonArraySize; i++) {
-                window.getButton(i, c).addActionListener(this);
-            }
+        welcomeView = new WelcomeView();
+        window = welcomeView;
+        for (int i = 0; i < Window.buttonArraySize; i++) {
+            window.getMenuItem(i).addActionListener(this);
         }
-        catch(Exception e){
-            signOut();
-        }
+
     }
 
 
     public void actionPerformed(ActionEvent e){
         int a=5;
         try {
-            if (e.getSource() == window.getButton(MenuButtons.classes, c)){
+            if (e.getSource() == window.getMenuItem(MenuButtons.classes)){
                 MyClassesController myClassesController = new MyClassesController(this, model);
             }
-            else if(e.getSource() == window.getButton(MenuButtons.exit, c)){
+            else if(e.getSource() == window.getMenuItem(MenuButtons.exit)){
                 int i=JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?");
                 if(i==0) {
                     model.signOut();
                     System.exit(0);
                 }
             }
-            else if(e.getSource() == window.getButton(MenuButtons.myStudents, c) ||
-                    e.getSource() == window.getButton(MenuButtons.myTeachers, c)   ){
+            else if(e.getSource() == window.getMenuItem(MenuButtons.myStudents) ||
+                    e.getSource() == window.getMenuItem(MenuButtons.myTeachers)   ){
                 MyStudentsTeachersController myStudentsTeachersController = new MyStudentsTeachersController(this, model);
             }
-            else if(e.getSource()==window.getButton(MenuButtons.signOut,c)){
+            else if(e.getSource()==window.getMenuItem(MenuButtons.signOut)){
                 signOut();
             }
-            else if(e.getSource() == window.getButton(MenuButtons.takeAttendance, c)){
+            else if(e.getSource() == window.getMenuItem(MenuButtons.takeAttendance)){
                 AttendanceTakingController attendanceTakingController = new AttendanceTakingController(this,model);
             }
-            else if(e.getSource() == window.getButton(MenuButtons.timetable, c)){
+            else if(e.getSource() == window.getMenuItem(MenuButtons.timetable)){
                 TimetableController timetableController = new TimetableController(this,model);
             }
-            else if(e.getSource() == window.getButton(MenuButtons.viewAttendance, c)){
+            else if(e.getSource() == window.getMenuItem(MenuButtons.viewAttendance)){
                 AttendanceController attendanceController = new AttendanceController(this,model);
             }
-            else if(e.getSource() == window.getButton(MenuButtons.profile, c)){
+            else if(e.getSource() == window.getMenuItem(MenuButtons.profile)){
                 ProfileController profileController = new ProfileController(this, model);
             }
         }

@@ -21,7 +21,7 @@ public class ProfileController implements ActionListener {
         //internal frame settings
         setShowingSettings();
         //sending frame to window
-        cont.getWindow().setInternalFrame(v);
+        //cont.getWindow().setInternalFrame(v);
 
     }
 

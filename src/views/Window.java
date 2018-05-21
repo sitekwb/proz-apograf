@@ -6,35 +6,27 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class Window extends JFrame {
-    private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenu modulesMenu;
-    private javax.swing.JMenu attendanceMenu;
-    private javax.swing.JMenuItem classesButton;
-    private javax.swing.JMenuItem exitButton;
-    private javax.swing.JInternalFrame moduleFrame;
-    private javax.swing.JMenuItem myStudentsButton;
-    private javax.swing.JMenuItem myTeachersButton;
-    private javax.swing.JMenu optionsMenu;
-    private javax.swing.JLabel refreshInfoLabel;
-    private javax.swing.JMenuItem signOutButton;
-    private javax.swing.JMenuItem takeAttendanceButton;
-    private javax.swing.JMenuItem timetableButton;
-    private javax.swing.JMenuItem viewAttendanceButton;
-    private javax.swing.JMenuItem profileButton;
+    protected javax.swing.JMenuBar menuBar;
+    protected javax.swing.JMenu modulesMenu;
+    protected javax.swing.JMenu attendanceMenu;
+    protected javax.swing.JMenuItem classesButton;
+    protected javax.swing.JMenuItem exitButton;
+    protected javax.swing.JMenuItem myStudentsButton;
+    protected javax.swing.JMenuItem myTeachersButton;
+    protected javax.swing.JMenu optionsMenu;
+    protected javax.swing.JMenuItem signOutButton;
+    protected javax.swing.JMenuItem takeAttendanceButton;
+    protected javax.swing.JMenuItem timetableButton;
+    protected javax.swing.JMenuItem viewAttendanceButton;
+    protected javax.swing.JMenuItem profileButton;
 
-    private String secretCode = "abcd";
-    public void setInternalFrame(JInternalFrame internalFrame){
-        moduleFrame = internalFrame;
-    }
 
-    private JMenuItem buttonArray[];
+
+    protected JMenuItem buttonArray[];
 
 
     public Window(){
 
-
-        moduleFrame = new javax.swing.JInternalFrame();
-        refreshInfoLabel = new javax.swing.JLabel();
 
         menuBar = new javax.swing.JMenuBar();
         menuBar.setFont(new Font("Times New Roman",Font.PLAIN,30));
@@ -79,20 +71,8 @@ public class Window extends JFrame {
         });
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
-        moduleFrame.setVisible(true);
 
-        javax.swing.GroupLayout moduleFrameLayout = new javax.swing.GroupLayout(moduleFrame.getContentPane());
-        moduleFrame.getContentPane().setLayout(moduleFrameLayout);
-        moduleFrameLayout.setHorizontalGroup(
-                moduleFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 1417, Short.MAX_VALUE)
-        );
-        moduleFrameLayout.setVerticalGroup(
-                moduleFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 853, Short.MAX_VALUE)
-        );
 
-        refreshInfoLabel.setText("Last refresh: ");
 
         optionsMenu.setText("Options");
 
@@ -147,29 +127,12 @@ public class Window extends JFrame {
 
         setJMenuBar(menuBar);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(moduleFrame)
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(refreshInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 419, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(moduleFrame)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(refreshInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
 
 
         buttonArray= new JMenuItem[]{classesButton, exitButton, myStudentsButton,
                 myTeachersButton, signOutButton,
                 takeAttendanceButton, timetableButton, viewAttendanceButton, profileButton};
         buttonArraySize = buttonArray.length;
-        setVisible(true);
     }
 
 
@@ -177,17 +140,11 @@ public class Window extends JFrame {
         viewAttendance,profile};
     public static int buttonArraySize;
 
-    public JMenuItem getButton(MenuButtons button, String code){
-        //if(!code.equals(secretCode) ) throw new Exception();
+    public JMenuItem getMenuItem(MenuButtons button){
         return buttonArray[button.ordinal()];
     }
-    public JMenuItem getButton(int i, String code){
-        //if(!code.equals(secretCode) ) throw new Exception();
+    public JMenuItem getMenuItem(int i){
         //TODO check i
         return buttonArray[i];
-    }
-    public JLabel getRefreshInfoLabel(String code){
-        //if(!code.equals(secretCode) ) throw new Exception();
-        return refreshInfoLabel;
     }
 }

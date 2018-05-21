@@ -7,27 +7,26 @@ import java.awt.*;
 
 import static exceptions.ConnException.ErrorTypes.err;
 
-public class ProfileView extends JInternalFrame {
+public class ProfileView extends views.Window {
     private javax.swing.JButton jButton[];
     private javax.swing.JLabel jLabel[];
     private javax.swing.JTextField jTextField[];
     private javax.swing.JLabel title;
     private static String secretCode = "xxxx";
-    JButton getButton(int i) throws ConnException{
+    public JButton getButton(int i) throws ConnException{
         if(i>4 || i<0) throw new ConnException(err);
         return jButton[i];
     }
-    JTextField getTextField(int i)throws ConnException{
+    public JTextField getTextField(int i)throws ConnException{
         if(i>4 || i<0) throw new ConnException(err);
         return jTextField[i];
     }
-    JLabel getLabel(int i) throws ConnException{
+    public JLabel getLabel(int i) throws ConnException{
         if(i>4 || i<0) throw new ConnException(err);
         return jLabel[i];
     }
 
     public ProfileView(){
-        super("My data");
         title = new javax.swing.JLabel();
 
         jLabel = new JLabel [5] ;
@@ -39,20 +38,24 @@ public class ProfileView extends JInternalFrame {
 
         title.setText("PROFILE");
         add(title);
+        layout.addLayoutComponent("Title",title);
         for(int i=0;i<5;i++){
             jLabel[i]=new JLabel();
             add(jLabel[i]);
+            layout.addLayoutComponent("Label "+(i+1),jLabel[i]);
 
             jTextField[i]=new JTextField();
             add(jTextField[i]);
+            layout.addLayoutComponent("TextField "+(i+1),jTextField[i]);
 
             jButton[i]=new JButton();
             add(jButton[i]);
+            layout.addLayoutComponent("Button "+(i+1),jButton[i]);
         }
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds(0,0,(int)screenSize.getWidth()*3/4,(int)screenSize.getHeight()*3/4);
-        setMinimumSize(new Dimension((int)screenSize.getWidth()*3/4,(int)screenSize.getHeight()*3/4));
+        setSize(400,400);
+        setMinimumSize(new Dimension(400,400));
         setMaximumSize(new Dimension((int)screenSize.getWidth(),(int)screenSize.getHeight()));
 
 
