@@ -1,12 +1,12 @@
 package mains.controllers;
 
-import internalframes.attendance.AttendanceController;
-import internalframes.attendancetaking.AttendanceTakingController;
+import modules.attendance.AttendanceController;
+import modules.attendancetaking.AttendanceTakingController;
 import mains.Model;
-import internalframes.myclasses.MyClassesController;
-import internalframes.mystudentsteachers.MyStudentsTeachersController;
-import internalframes.profile.ProfileController;
-import internalframes.timetable.TimetableController;
+import modules.myclasses.MyClassesController;
+import modules.mystudentsteachers.MyStudentsTeachersController;
+import modules.profile.ProfileController;
+import modules.timetable.TimetableController;
 import views.WelcomeView;
 import views.Window;
 import views.Window.MenuButtons;
@@ -17,13 +17,12 @@ import java.awt.event.ActionListener;
 
 public class PersonController implements ActionListener {
     protected Model model;
-    protected WelcomeView welcomeView;
     protected Controller cont;
     protected Window window;
     public PersonController(Controller controller, Model mod) {
         cont = controller;
         model = mod;
-        welcomeView = new WelcomeView();
+        WelcomeView welcomeView = new WelcomeView();
         window = welcomeView;
         for (int i = 0; i < Window.buttonArraySize; i++) {
             window.getMenuItem(i).addActionListener(this);
@@ -33,10 +32,11 @@ public class PersonController implements ActionListener {
 
 
     public void actionPerformed(ActionEvent e){
-        int a=5;
         try {
+            window.setVisible(false);
             if (e.getSource() == window.getMenuItem(MenuButtons.classes)){
                 MyClassesController myClassesController = new MyClassesController(this, model);
+                window = myClassesController.getView();
             }
             else if(e.getSource() == window.getMenuItem(MenuButtons.exit)){
                 int i=JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?");
@@ -48,21 +48,29 @@ public class PersonController implements ActionListener {
             else if(e.getSource() == window.getMenuItem(MenuButtons.myStudents) ||
                     e.getSource() == window.getMenuItem(MenuButtons.myTeachers)   ){
                 MyStudentsTeachersController myStudentsTeachersController = new MyStudentsTeachersController(this, model);
+                window = myStudentsTeachersController.getView();
             }
             else if(e.getSource()==window.getMenuItem(MenuButtons.signOut)){
                 signOut();
             }
             else if(e.getSource() == window.getMenuItem(MenuButtons.takeAttendance)){
                 AttendanceTakingController attendanceTakingController = new AttendanceTakingController(this,model);
+                window = attendanceTakingController.getView();
             }
             else if(e.getSource() == window.getMenuItem(MenuButtons.timetable)){
                 TimetableController timetableController = new TimetableController(this,model);
+                window = timetableController.getView();
             }
             else if(e.getSource() == window.getMenuItem(MenuButtons.viewAttendance)){
                 AttendanceController attendanceController = new AttendanceController(this,model);
+                window = attendanceController.getView();
             }
-            else if(e.getSource() == window.getMenuItem(MenuButtons.profile)){
+            else{ //if(e.getSource() == window.getMenuItem(MenuButtons.profile)){
                 ProfileController profileController = new ProfileController(this, model);
+                window = profileController.getView();
+            }
+            for (int i = 0; i < Window.buttonArraySize; i++) {
+                window.getMenuItem(i).addActionListener(this);
             }
         }
         catch(Exception exception){
