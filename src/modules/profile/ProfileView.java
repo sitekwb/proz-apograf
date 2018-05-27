@@ -37,8 +37,17 @@ public class ProfileView extends views.Window {
         setLayout(layout);
 
         title.setText("PROFILE");
+        title.setFont(new Font("Comic Sans MS",Font.PLAIN, 100));
+
         add(title);
         layout.addLayoutComponent("Title",title);
+        //empty labels to manage gridLayout
+        JLabel lab1 = new JLabel();
+        JLabel lab2 = new JLabel();
+        add(lab1);
+        add(lab2);
+        layout.addLayoutComponent("Empty JLabel", lab1);
+        layout.addLayoutComponent("Empty JLabel", lab2);
         for(int i=0;i<5;i++){
             jLabel[i]=new JLabel();
             jLabel[i].setFont(new Font("Times New Roman", Font.PLAIN,40));
@@ -46,10 +55,12 @@ public class ProfileView extends views.Window {
             layout.addLayoutComponent("Label "+(i+1),jLabel[i]);
 
             jTextField[i]=new JTextField();
+            jTextField[i].setFont(new Font("Times New Roman", Font.PLAIN,40));
             add(jTextField[i]);
             layout.addLayoutComponent("TextField "+(i+1),jTextField[i]);
 
             jButton[i]=new JButton();
+            jButton[i].setFont(new Font("Times New Roman", Font.PLAIN,40));
             add(jButton[i]);
             layout.addLayoutComponent("Button "+(i+1),jButton[i]);
         }

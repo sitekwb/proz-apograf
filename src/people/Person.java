@@ -15,4 +15,10 @@ public abstract class Person {
     public int getId(){
         return id;
     }
+    public void setMail(String m){
+        mail = m;
+    }
+    public void setName(String n){
+        name = n;
+    }
 }
