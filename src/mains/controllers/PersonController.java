@@ -17,15 +17,22 @@ import java.awt.event.ActionListener;
 
 public class PersonController implements ActionListener {
     protected Model model;
-    protected Controller cont;
+    private Controller cont;
     protected Window window;
+    private WelcomeView welcomeView;
     public PersonController(Controller controller, Model mod) {
         cont = controller;
         model = mod;
-        WelcomeView welcomeView = new WelcomeView();
+        welcomeView = new WelcomeView();
         window = welcomeView;
-        for (int i = 0; i < Window.buttonArraySize; i++) {
-            window.getMenuItem(i).addActionListener(this);
+        try {
+            for (int i = 0; i < Window.buttonArraySize; i++) {
+                window.getMenuItem(i).addActionListener(this);
+            }
+        }
+        catch(ArrayIndexOutOfBoundsException e){
+            model.signOut();
+            cont.signOut();
         }
 
     }
@@ -34,11 +41,7 @@ public class PersonController implements ActionListener {
     public void actionPerformed(ActionEvent e){
         try {
             window.setVisible(false);
-            if (e.getSource() == window.getMenuItem(MenuButtons.classes)){
-                MyClassesController myClassesController = new MyClassesController(this, model);
-                window = myClassesController.getView();
-            }
-            else if(e.getSource() == window.getMenuItem(MenuButtons.exit)){
+            if(e.getSource() == window.getMenuItem(MenuButtons.exit)){
                 int i=JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?");
                 if(i==0) {
                     model.signOut();
@@ -54,16 +57,16 @@ public class PersonController implements ActionListener {
                 signOut();
             }
             else if(e.getSource() == window.getMenuItem(MenuButtons.takeAttendance)){
-                AttendanceTakingController attendanceTakingController = new AttendanceTakingController(this,model);
-                window = attendanceTakingController.getView();
+                MyClassesController myClassesController = new MyClassesController(this, model);
+                window = myClassesController.getView();
             }
             else if(e.getSource() == window.getMenuItem(MenuButtons.timetable)){
                 TimetableController timetableController = new TimetableController(this,model);
                 window = timetableController.getView();
             }
             else if(e.getSource() == window.getMenuItem(MenuButtons.viewAttendance)){
-                AttendanceController attendanceController = new AttendanceController(this,model);
-                window = attendanceController.getView();
+                MyClassesController myClassesController = new MyClassesController(this, model);
+                window = myClassesController.getView();
             }
             else{ //if(e.getSource() == window.getMenuItem(MenuButtons.profile)){
                 ProfileController profileController = new ProfileController(this, model);
@@ -81,6 +84,11 @@ public class PersonController implements ActionListener {
 
     public Window getWindow(){
         return window;
+    }
+    public void setWindow(Window w){ window = w;}
+    public void setWelcomeWindow(){
+        window = welcomeView;
+        window.setVisible(true);
     }
     public void signOut(){
         model.signOut();

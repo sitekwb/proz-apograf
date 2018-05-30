@@ -1,12 +1,12 @@
-package people;
+package data;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Student extends Person {
+public class Student extends Person{
     private int student_id;
     private String group;
-
+    private Attendance attendance;
     public Student (ResultSet result) throws SQLException{
         result.next();
         id = result.getInt("id");
@@ -17,8 +17,11 @@ public class Student extends Person {
         group = result.getString("class");
     }
 
-    public Student(boolean adminAccess, ResultSet result) throws SQLException{
-
+    public void setAttendance(Attendance at){
+        attendance = at;
+    }
+    public Attendance getAttendance(){
+        return attendance;
     }
     public String getStudentID(){return String.valueOf(student_id);}
     public String getGroup(){ return group;}

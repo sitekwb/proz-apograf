@@ -3,7 +3,7 @@ package modules.profile;
 import exceptions.ConnException;
 import mains.controllers.PersonController;
 import mains.Model;
-import people.Student;
+import data.Student;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

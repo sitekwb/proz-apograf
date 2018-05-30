@@ -1,4 +1,4 @@
-package people;
+package data;
 
 public abstract class Person {
     protected String mail, password, name;

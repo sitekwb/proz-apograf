@@ -1,9 +1,10 @@
 package mains;
 
 import exceptions.ConnException;
-import people.*;
+import data.*;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 
 import static exceptions.ConnException.ErrorTypes.*;
@@ -18,7 +19,6 @@ public class Model {
     Person me;
 
     public Model() throws SQLException{
-        openDatabaseConnection();
 
     }
 
@@ -86,10 +86,12 @@ public class Model {
     }
 
     public void logIn(String mail, String pass) throws ConnException {
+
         if (isHacker(mail) || isHacker(pass)) {
             throw new ConnException(hacker);
         }
         try {
+            openDatabaseConnection();
             //check if user has given the right data
             userType = checkUser(mail, pass);
             //download personal data
@@ -161,6 +163,7 @@ public class Model {
             throw new ConnException(hacker);
         }
         try {
+            openDatabaseConnection();
             if(isMailInDatabase(mail)){
                 throw new ConnException(existing);
             }
@@ -259,4 +262,18 @@ public class Model {
         }
         stat.close();
     }
+
+    public ArrayList<Student> getStudents(int showingState) throws SQLException{
+        //TODO
+        throw new SQLException();
+    }
+    public void takeAttendance(ArrayList<Student> students, Group group) throws SQLException{
+        //TODO
+        throw new SQLException();
+    }
+    public ArrayList<Group> getGroups(int showingState)throws SQLException{
+        //TODO
+        throw new SQLException();
+    }
+
 }

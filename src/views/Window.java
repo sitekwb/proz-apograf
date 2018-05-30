@@ -9,7 +9,6 @@ public class Window extends JFrame {
     protected javax.swing.JMenuBar menuBar;
     protected javax.swing.JMenu modulesMenu;
     protected javax.swing.JMenu attendanceMenu;
-    protected javax.swing.JMenuItem classesButton;
     protected javax.swing.JMenuItem exitButton;
     protected javax.swing.JMenuItem myStudentsButton;
     protected javax.swing.JMenuItem myTeachersButton;
@@ -38,8 +37,6 @@ public class Window extends JFrame {
         exitButton.setFont(new Font("Times New Roman",Font.PLAIN,30));
         modulesMenu = new javax.swing.JMenu();
         modulesMenu.setFont(new Font("Times New Roman",Font.PLAIN,30));
-        classesButton = new javax.swing.JMenuItem();
-        classesButton.setFont(new Font("Times New Roman",Font.PLAIN,30));
         timetableButton = new javax.swing.JMenuItem();
         timetableButton.setFont(new Font("Times New Roman",Font.PLAIN,30));
         attendanceMenu = new javax.swing.JMenu();
@@ -95,10 +92,6 @@ public class Window extends JFrame {
 
         modulesMenu.setText("Modules");
 
-        classesButton.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        classesButton.setText("List of classes");
-
-        modulesMenu.add(classesButton);
 
         timetableButton.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         timetableButton.setText("My Timetable");
@@ -129,22 +122,24 @@ public class Window extends JFrame {
 
 
 
-        buttonArray= new JMenuItem[]{classesButton, exitButton, myStudentsButton,
+        buttonArray= new JMenuItem[]{exitButton, myStudentsButton,
                 myTeachersButton, signOutButton,
                 takeAttendanceButton, timetableButton, viewAttendanceButton, profileButton};
         buttonArraySize = buttonArray.length;
     }
 
 
-    public enum MenuButtons{classes,exit,myStudents,myTeachers,signOut,takeAttendance,timetable,
+    public enum MenuButtons{exit,myStudents,myTeachers,signOut,takeAttendance,timetable,
         viewAttendance,profile};
     public static int buttonArraySize;
 
     public JMenuItem getMenuItem(MenuButtons button){
         return buttonArray[button.ordinal()];
     }
-    public JMenuItem getMenuItem(int i){
-        //TODO check i
+    public JMenuItem getMenuItem(int i) throws ArrayIndexOutOfBoundsException{
+        if(i<0 || i>buttonArraySize-1){
+            throw new ArrayIndexOutOfBoundsException();
+        }
         return buttonArray[i];
     }
 }

@@ -10,7 +10,6 @@ class StudentController extends PersonController {
 
         window.getMenuItem(MenuButtons.myStudents).setEnabled(false);
         window.getMenuItem(MenuButtons.takeAttendance).setEnabled(false);
-        window.getMenuItem(MenuButtons.classes).setEnabled(false);
 
 
     }

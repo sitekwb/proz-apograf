@@ -1,5 +1,6 @@
 package modules.attendance;
 
+import data.Group;
 import mains.Model;
 import mains.controllers.PersonController;
 
@@ -12,7 +13,7 @@ public class AttendanceController extends JInternalFrame {
         return view;
     }
 
-    public AttendanceController(PersonController controller, Model model){
+    public AttendanceController(PersonController controller, Model model, Group group){
 
     }
 
