@@ -48,7 +48,7 @@ public class AttendanceTakingController implements ActionListener {
         view.setVisible(true);
     }
     private void show() throws SQLException {
-        students = model.getStudents(showingState);
+        students = model.getStudents(showingState, group);
         int i = 0;
         try {
             for (Student student: students) {
@@ -105,7 +105,7 @@ public class AttendanceTakingController implements ActionListener {
             int day = Integer.parseInt(calendar.substring(0, 1));
             int month = Integer.parseInt(calendar.substring(3, 4));
             int year = Integer.parseInt(calendar.substring(6, 9));
-            GregorianCalendar date = new GregorianCalendar(year,month-1,day);
+            Date date = new Date(year-1900,month-1,day);
 
             int i=0;
             for(Student student: students){

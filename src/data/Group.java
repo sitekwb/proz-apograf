@@ -17,6 +17,12 @@ public class Group {
         start_hour = result.getTime("start_hour");
         finish_hour = result.getTime("finish_hour");
     }
+    public Group(ResultSet result, boolean small) throws SQLException {
+        result.next();
+        id = result.getInt("id");
+        name = result.getString("name");
+    }
 
     public String getName(){ return name;   }
+    public int getId(){ return id;}
 }

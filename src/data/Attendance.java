@@ -1,13 +1,19 @@
 package data;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.GregorianCalendar;
 
 public class Attendance {
-    private GregorianCalendar date;
+    private Date date;
     private boolean present;
-    public Attendance(GregorianCalendar d, boolean isPresent){
+    public Attendance(Date d, boolean isPresent){
         date = d;
         present = isPresent;
+    }
+    public Date getDate(){
+        return date;
+    }
+    public boolean isPresent() {
+        return present;
     }
 }

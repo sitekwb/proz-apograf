@@ -17,6 +17,12 @@ public class Student extends Person{
         group = result.getString("class");
     }
 
+    public Student(ResultSet result, boolean small) throws SQLException{
+        result.next();
+        id = result.getInt("id");
+        name = result.getString("name");
+    }
+
     public void setAttendance(Attendance at){
         attendance = at;
     }

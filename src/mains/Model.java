@@ -3,6 +3,7 @@ package mains;
 import exceptions.ConnException;
 import data.*;
 
+import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -262,18 +263,60 @@ public class Model {
         }
         stat.close();
     }
-
-    public ArrayList<Student> getStudents(int showingState) throws SQLException{
-        //TODO
-        throw new SQLException();
+    int lastId;
+    public ArrayList<Student> getStudents(int showingState, Group group) throws SQLException{
+        if(isHacker(group.getName())){
+            throw new SQLException();
+        }
+        if(showingState==0){
+            lastId=0;
+        }
+        Statement stat = conn.createStatement();
+        String query = "SELECT id, name FROM Students WHERE class="+group.getId()+" AND id >= "+lastId+
+                " ORDER BY id LIMIT 27;";
+        ResultSet result = stat.executeQuery(query);
+        ArrayList<Student> students = new ArrayList<>(27);
+        for(Student student: students){
+            student = new Student(result, true);
+        }
+        lastId+=students.size();
+        stat.close();
+        return students;
     }
     public void takeAttendance(ArrayList<Student> students, Group group) throws SQLException{
-        //TODO
-        throw new SQLException();
+        Statement stat = conn.createStatement();
+        String query = "INSERT INTO Attendance (student, class, date, present) values ";
+        for(Student student: students){
+            query += "("+student.getId()+", "+group.getId()+", '"+
+                    student.getAttendance().getDate()+"', "+student.getAttendance().isPresent()+"), ";
+        }
+        query = query.replace(query.substring(query.length()-2), ";");
+        stat.executeUpdate(query);
+        stat.close();
     }
     public ArrayList<Group> getGroups(int showingState)throws SQLException{
-        //TODO
-        throw new SQLException();
+        if(showingState==0){
+            lastId=0;
+        }
+        Statement stat = conn.createStatement();
+        String query;
+        if(userType==UserType.admin) {
+            query = "SELECT id, name FROM Classes WHERE id >= " + lastId + " ORDER BY id LIMIT 27;";
+        }
+        else if(userType == UserType.teacher){
+            query = "SELECT Classes.id, Classes.name FROM Classes INNER JOIN Teachersclasses" +
+                    " on Teachersclasses.class=Classes.id WHERE Teachersclasses.teacher="+me.getId()+
+                    " AND Classes.id >= " + lastId + " ORDER BY Classes.id LIMIT 27;";
+        }
+        else throw new SQLException();//student
+        ResultSet result = stat.executeQuery(query);
+        ArrayList<Group> groups = new ArrayList<>(27);
+        for(Group group: groups){
+            group = new Group(result, true);
+        }
+        lastId+=groups.size();
+        stat.close();
+        return groups;
     }
 
 }
