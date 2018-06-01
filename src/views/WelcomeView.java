@@ -1,6 +1,5 @@
 package views;
 
-import mains.controllers.PersonController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +7,6 @@ import java.awt.*;
 public class WelcomeView extends views.Window {
 
     public WelcomeView(){
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         JLabel welcomeLabel = new javax.swing.JLabel();
         JLabel actionLabel = new javax.swing.JLabel();
@@ -18,7 +16,6 @@ public class WelcomeView extends views.Window {
         welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 80));
         welcomeLabel.setForeground(Color.blue);
-        welcomeLabel.setBackground(Color.yellow);
 
         actionLabel.setText("You can choose your action in menu bar above. I wish you good attendance checking!");
         actionLabel.setHorizontalAlignment(SwingConstants.CENTER);

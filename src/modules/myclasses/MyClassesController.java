@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 public class MyClassesController implements ActionListener {
     private MyClassesView view;
+    private boolean viewAttendanceFlag;
     private PersonController cont;
     private Model model;
     private int showingState;
@@ -22,7 +23,8 @@ public class MyClassesController implements ActionListener {
     public MyClassesView getView() {
         return view;
     }
-    public MyClassesController(PersonController controller, Model mod){
+    public MyClassesController(PersonController controller, Model mod, boolean wantToView){
+        viewAttendanceFlag = wantToView;
         model = mod;
         cont= controller;
         view = new MyClassesView();
@@ -82,12 +84,12 @@ public class MyClassesController implements ActionListener {
             if(i==27){
                 view.getErrLabel().setText("You didn't select anything. Try again.");
             }
-            else if(model.getUserType()==Model.UserType.student){
+            else if(viewAttendanceFlag){
                 AttendanceController attendanceController = new AttendanceController(cont,model, groups.get(i));
                 cont.setWindow(attendanceController.getView());
                 view.setVisible(false);
             }
-            else if(model.getUserType()==Model.UserType.teacher){//take attendance
+            else {//take attendance
                 AttendanceTakingController attendanceTakingController = new AttendanceTakingController(cont,model, groups.get(i));
                 cont.setWindow(attendanceTakingController.getView());
                 view.setVisible(false);

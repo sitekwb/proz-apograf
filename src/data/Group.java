@@ -1,5 +1,7 @@
 package data;
 
+import mains.Model;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
@@ -21,6 +23,14 @@ public class Group {
         result.next();
         id = result.getInt("id");
         name = result.getString("name");
+    }
+
+    public Group(int tid, String tname)throws SQLException{
+        if(Model.isHacker(tname)){
+            throw new SQLException();
+        }
+        id = tid;
+        name = tname;
     }
 
     public String getName(){ return name;   }

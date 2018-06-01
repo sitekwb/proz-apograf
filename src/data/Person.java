@@ -21,4 +21,5 @@ public abstract class Person {
     public void setName(String n){
         name = n;
     }
+    public abstract Group getGroup();
 }

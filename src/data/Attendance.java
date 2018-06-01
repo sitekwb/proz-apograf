@@ -16,4 +16,5 @@ public class Attendance {
     public boolean isPresent() {
         return present;
     }
+    public void setPresent(boolean b){ present = b; }
 }

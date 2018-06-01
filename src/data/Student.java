@@ -1,26 +1,30 @@
 package data;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Student extends Person{
     private int student_id;
-    private String group;
+    private Group group;
     private Attendance attendance;
     public Student (ResultSet result) throws SQLException{
         result.next();
         id = result.getInt("id");
         mail = result.getString("mail");
         password = result.getString("pass");
-        name = result.getString("name");
+        name = result.getString("Students.name");
         student_id = result.getInt("student_id");
-        group = result.getString("class");
+        group = new Group(result.getInt("class"), result.getString("Classes.name"));
     }
 
-    public Student(ResultSet result, boolean small) throws SQLException{
+    public Student(ResultSet result, boolean attendanceFlag) throws SQLException{
         result.next();
-        id = result.getInt("id");
-        name = result.getString("name");
+        id = result.getInt("Students.id");
+        name = result.getString("Students.name");
+        if(attendanceFlag){
+            attendance = new Attendance(result.getDate("date"),result.getBoolean("present"));
+        }
     }
 
     public void setAttendance(Attendance at){
@@ -30,6 +34,6 @@ public class Student extends Person{
         return attendance;
     }
     public String getStudentID(){return String.valueOf(student_id);}
-    public String getGroup(){ return group;}
+    public Group getGroup(){ return group;}
 
 }

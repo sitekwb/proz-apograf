@@ -6,10 +6,12 @@ import data.Student;
 import mains.Model;
 import mains.controllers.PersonController;
 import modules.attendance.AttendanceController;
+import modules.myclasses.MyClassesController;
 import modules.myclasses.MyClassesView;
 import views.WelcomeView;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Date;
@@ -42,6 +44,7 @@ public class AttendanceTakingController implements ActionListener {
         catch(SQLException e){
             view.getErrLabel().setText("Error in connection. Try again.");
         }
+        view.getClassLabel().setText(group.getName());
         view.getCancelButton().addActionListener(this);
         view.getConfirmButton().addActionListener(this);
         view.getShowNextButton().addActionListener(this);
@@ -74,6 +77,7 @@ public class AttendanceTakingController implements ActionListener {
         }
     }
     private boolean isDate(String d){
+        //TODO check if date is good with class Group
         int day, month,year;
         try {
             day = Integer.parseInt(d.substring(0, 1));
@@ -94,17 +98,21 @@ public class AttendanceTakingController implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("Cancel")){
-            cont.setWelcomeWindow();
+            MyClassesController myClassesController = new MyClassesController(cont, model,false);
+            cont.setWindow(myClassesController.getView());
             view.setVisible(false);
         }
         else if(e.getActionCommand().equals("Confirm")){
-            String calendar = JOptionPane.showInputDialog("What is the date of classes? (DD-MM-YYYY)");
+            JLabel text = new JLabel("What is the date of classes? (DD-MM-YYYY)");
+            text.setFont(new Font("Times New Roman", Font.PLAIN, 40));
+            String calendar = JOptionPane.showInputDialog(text,text);
             while(!isDate(calendar)){
-                calendar = JOptionPane.showInputDialog("Error, so AGAIN! What is the date of classes? (DD-MM-YYYY)");
+                text.setText("Error, so AGAIN! What is the date of classes? (DD-MM-YYYY)");
+                calendar = JOptionPane.showInputDialog(text,text);
             }
-            int day = Integer.parseInt(calendar.substring(0, 1));
-            int month = Integer.parseInt(calendar.substring(3, 4));
-            int year = Integer.parseInt(calendar.substring(6, 9));
+            int day = Integer.parseInt(calendar.substring(0, 2));
+            int month = Integer.parseInt(calendar.substring(3, 5));
+            int year = Integer.parseInt(calendar.substring(6, 10));
             Date date = new Date(year-1900,month-1,day);
 
             int i=0;
