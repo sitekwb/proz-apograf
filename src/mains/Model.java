@@ -101,16 +101,16 @@ public class Model {
             switch (userType) {
                 case teacher:
                     query = "SELECT * FROM Teachers WHERE mail='" + mail + "' LIMIT 1;";
-                    me = new Teacher(statement.executeQuery(query));
+                    me = new Teacher(statement.executeQuery(query), BuildingType.normal);
                     break;
                 case admin:
                     query = "SELECT * FROM Teachers WHERE mail='" + mail + "' LIMIT 1;";
-                    me = new Teacher(statement.executeQuery(query));
+                    me = new Teacher(statement.executeQuery(query), BuildingType.normal);
                     break;
                 case student:
                 default:
                     query = "SELECT * FROM Students WHERE mail='" + mail + "' LIMIT 1;";
-                    me = new Student(statement.executeQuery(query));
+                    me = new Student(statement.executeQuery(query), BuildingType.normal);
             }
             statement.close();
         } catch (SQLException e) {
@@ -194,20 +194,20 @@ public class Model {
         }
     }
 
-    public void changePass(String newPassword) throws SQLException, ConnException{
+    public void changePass(Person person, String newPassword) throws SQLException, ConnException{
         if(isHacker(newPassword)){
             throw new ConnException(hacker);
         }
         Statement stat;
         stat = conn.createStatement();
         String table;
-        if(userType==UserType.student) {
+        if(person instanceof Student) {
             table = "Students";
         }
         else{
             table = "Teachers";
         }
-        stat.executeUpdate("UPDATE "+table+" SET pass='"+newPassword+"' WHERE id = "+me.getId()+";");
+        stat.executeUpdate("UPDATE "+table+" SET pass='"+newPassword+"' WHERE id = "+person.getId()+";");
         stat.close();
     }
 
@@ -217,36 +217,44 @@ public class Model {
         }
         return false;
     }
-    private void update(String value, String field) throws SQLException, ConnException{
+    private void update(Person person, String value, String field) throws SQLException, ConnException{
         if(isHacker(value) || isHacker(field)){
             throw new ConnException(hacker);
         }
         Statement stat;
         stat = conn.createStatement();
         String table;
-        if(userType==UserType.student) {
+        if(person instanceof Student) {
             table = "Students";
         }
         else{
             table = "Teachers";
         }
-        stat.executeUpdate("UPDATE "+table+" SET "+field+"='"+value+"' WHERE id = "+me.getId()+";");
+        stat.executeUpdate("UPDATE "+table+" SET "+field+"='"+value+"' WHERE id = "+person.getId()+";");
         if(field.equals("mail")){
-            stat.executeUpdate("UPDATE Waiting SET mail='"+value+"' WHERE mail = '"+me.getMail()+"';");
+            stat.executeUpdate("UPDATE Waiting SET mail='"+value+"' WHERE mail = '"+person.getMail()+"';");
         }
         stat.close();
     }
-    public void changeMail(String mail)throws SQLException,ConnException{
+    public void changeMail(Person person, String mail)throws SQLException,ConnException{
         if(isMailInDatabase(mail)){
             throw new ConnException(existing);
         }
-        update(mail, "mail");
+        update(person, mail, "mail");
 
-        me.setMail(mail);
+        person.setMail(mail);
     }
-    public void changeName(String name)throws SQLException,ConnException{
-        update(name, "name");
-        me.setName(name);
+    public void changeStudentID(Student student, int student_id)throws SQLException,ConnException{
+        update(student, String.valueOf(student_id), "student_id");
+        student.setStudentID(student_id);
+    }
+    public void changeName(Person person, String name)throws SQLException,ConnException{
+        update(person, name, "name");
+        person.setName(name);
+    }
+    public void changeGenGroup(Student student, String genGroup)throws SQLException,ConnException{
+        update(student, genGroup, "gen_class");
+        student.setGenGroup(genGroup);
     }
     public void askForChange(String name, String type)throws SQLException,ConnException{
         if(isHacker(name) || isHacker(type)){
@@ -263,7 +271,29 @@ public class Model {
         }
         stat.close();
     }
-    int lastId;
+    public int getGroupIdByName(String groupName) throws SQLException, ConnException{
+        if(isHacker(groupName)){
+            throw new ConnException(hacker);
+        }
+        Statement stat = conn.createStatement();
+        ResultSet result = stat.executeQuery("SELECT id FROM Classes WHERE name='"+groupName+"';");
+        stat.close();
+        result.next();
+        return result.getInt("id");
+    }
+    public void addGroup(Person person, int groupId) throws SQLException{
+        String table;
+        if(person instanceof Student){
+            table = "Studentsclasses (student, class) ";
+        }
+        else {
+            table = "Teachersclasses (teacher, class) ";
+        }
+        Statement stat = conn.createStatement();
+        stat.executeUpdate("INSERT INTO "+table+" VALUES ("+person.getId()+", "+groupId+");");
+        stat.close();
+    }
+    private int lastId;
     public ArrayList<Student> getStudents(int showingState, Group group) throws SQLException{
         if(isHacker(group.getName())){
             throw new SQLException();
@@ -307,45 +337,41 @@ public class Model {
         Statement stat = conn.createStatement();
         String query;
         if(userType==UserType.admin) {
-            query = "SELECT * FROM Classes WHERE id >= " + lastId + " ORDER BY id LIMIT 27;";
+            query = "SELECT * FROM Classes WHERE id >= " + lastId + " ORDER BY id;";
         }
         else if(userType == UserType.teacher){
             query = "SELECT * FROM Classes INNER JOIN Teachersclasses" +
                     " on Teachersclasses.class=Classes.id WHERE Teachersclasses.teacher="+me.getId()+
-                    " AND Classes.id >= " + lastId + " ORDER BY Classes.id LIMIT 27;";
+                    " AND Classes.id >= " + lastId + " ORDER BY Classes.id;";
         }
         else{ //if(userType == UserType.student){
             query = "SELECT * FROM Classes INNER JOIN Studentsclasses" +
                     " ON Studentsclasses.class=Classes.id WHERE Studentsclasses.student="+me.getId()+
-                    " AND Classes.id >= " + lastId + " ORDER BY Classes.id LIMIT 27;";
+                    " AND Classes.id >= " + lastId + " ORDER BY Classes.id;";
         }
         ResultSet result = stat.executeQuery(query);
         ArrayList<Group> groups = new ArrayList<Group>();
         for(int i=0;i<27;i++){
             try {
-                Group group = new Group(result);
+                Group group = new Group(result, BuildingType.normal);
                 groups.add(group);
             }
             catch(SQLException e){
                 break;
             }
         }
-        lastId=(groups.size()==0)?0:(groups.get(groups.size()-1).getId()+1);
         stat.close();
         return groups;
     }
 
-    public ArrayList<Student> getAttendance(int showingState, Group group) throws SQLException{
-        if(showingState==0){
-            lastId=0;
-        }
+    public ArrayList<Student> getAttendance(Group group) throws SQLException{
         Statement stat = conn.createStatement();
         String query = "SELECT Students.id, Students.name, date, present FROM Attendance " +
                 "INNER JOIN Students ON Attendance.student=Students.id WHERE ";
         if(userType==UserType.student){
             query += "Students.id="+me.getId()+" AND ";
         }
-        query+="Attendance.class="+group.getId()+";";
+        query+="Attendance.class="+group.getId()+" ORDER BY date DESC, Students.name;";
 
         ResultSet result = stat.executeQuery(query);
         ArrayList<Student> students = new ArrayList<Student>();
@@ -358,7 +384,6 @@ public class Model {
                 break;
             }
         }
-        lastId=(students.size()==0)?0:(students.get(students.size()-1).getId()+1);
         stat.close();
         return students;
     }
@@ -372,4 +397,65 @@ public class Model {
         }
         stat.close();
     }
+    public ArrayList<Person> getPeople(boolean onlyStudents) throws SQLException{
+        ArrayList<Person> people = new ArrayList<>();
+        Statement stat = conn.createStatement();
+        String query;
+        if(userType == UserType.student){
+            query = "SELECT * FROM Teachers LEFT JOIN Teachersclasses ON Teachers.id=Teachersclasses.teacher " +
+                    "LEFT JOIN Classes ON Teachersclasses.class=Classes.id WHERE Classes.id IN " +
+                    "(SELECT id FROM Studentsclasses WHERE student="+me.getId()+");";
+            ResultSet result = stat.executeQuery(query);
+            while(result.next()) {
+                people.add(new Teacher(result, BuildingType.full));
+            }
+        }
+        else if(userType == UserType.teacher){
+            query = "SELECT * FROM Students LEFT JOIN Studentsclasses ON Students.id=Studentsclasses.student " +
+                    "LEFT JOIN Classes ON Studentsclasses.class=Classes.id WHERE Classes.id IN " +
+                    "(SELECT id FROM Teachersclasses WHERE teacher="+me.getId()+");";
+            ResultSet result = stat.executeQuery(query);
+            while(result.next()) {
+                people.add(new Student(result, BuildingType.full));
+            }
+        }
+        else {//admin
+            if(onlyStudents) {
+                query = "SELECT * FROM Students LEFT JOIN Studentsclasses ON Students.id=Studentsclasses.student " +
+                        "LEFT JOIN Classes ON Studentsclasses.class=Classes.id;";
+                ResultSet result = stat.executeQuery(query);
+                while (result.next()) {
+                    people.add(new Student(result, BuildingType.full));
+                }
+            }
+            else {
+                query = "SELECT * FROM Teachers LEFT JOIN Teachersclasses ON Teachers.id=Teachersclasses.teacher " +
+                        "LEFT JOIN Classes ON Teachersclasses.class=Classes.id;";
+                ResultSet result = stat.executeQuery(query);
+                while (result.next()) {
+                    people.add(new Teacher(result, BuildingType.full));
+                }
+            }
+        }
+        return people;
+    }
+
+    public void addPerson(Person person) throws SQLException{
+        if(isMailInDatabase(person.getMail())){
+            throw new SQLException();
+        }
+        Statement stat = conn.createStatement();
+        String query;
+        if(person instanceof Teacher){
+            query="INSERT INTO Teachers (mail, pass, name) VALUES ('"+person.getMail()+"', '"+
+                    person.getPass()+"', '"+person.getName()+"');";
+        }
+        else{//student
+            query = "INSERT INTO Students (mail, pass, name, student_id, gen_class) VALUES ('"+person.getMail()+"', '"+
+                    person.getPass()+"', '"+person.getName()+"', "+((Student)person).getStudentID()+", '"+
+                    ((Student)person).getGenGroup()+"');";
+        }
+        stat.executeUpdate(query);
+    }
+
 }

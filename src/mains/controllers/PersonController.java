@@ -52,9 +52,12 @@ public class PersonController implements ActionListener {
             }
             else {
                 Window oldWindow = window;
-                if (e.getSource() == window.getMenuItem(MenuButtons.myStudents) ||
-                        e.getSource() == window.getMenuItem(MenuButtons.myTeachers)) {
-                    MyStudentsTeachersController myStudentsTeachersController = new MyStudentsTeachersController(this, model);
+                if (e.getSource() == window.getMenuItem(MenuButtons.myStudents)){
+                    MyStudentsTeachersController myStudentsTeachersController = new MyStudentsTeachersController(this, model, true);
+                    window = myStudentsTeachersController.getView();
+                }
+                else if(e.getSource() == window.getMenuItem(MenuButtons.myTeachers)) {
+                    MyStudentsTeachersController myStudentsTeachersController = new MyStudentsTeachersController(this, model, false);
                     window = myStudentsTeachersController.getView();
                 } else if (e.getSource() == window.getMenuItem(MenuButtons.signOut)) {
                     signOut();

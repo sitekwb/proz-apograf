@@ -9,7 +9,7 @@ public class AttendanceView extends views.Window {
     private javax.swing.JLabel errLabel;
     private javax.swing.JScrollPane jScrollPane;
     private javax.swing.JTable jTable;
-    private JButton showNextButton;
+    private JButton refreshButton;
     private javax.swing.JLabel classLabel;
     private javax.swing.JLabel title1;
 
@@ -25,13 +25,13 @@ public class AttendanceView extends views.Window {
     JLabel getErrLabel(){
         return errLabel;
     }
-    JButton getShowNextButton(){
-        return showNextButton;
+    JButton getRefreshButton(){
+        return refreshButton;
     }
     JTable getTable(){ return jTable; }
 
     public AttendanceView(){
-        showNextButton = new javax.swing.JButton();
+        refreshButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
         confirmButton = new javax.swing.JButton();
         classLabel = new javax.swing.JLabel();
@@ -41,10 +41,10 @@ public class AttendanceView extends views.Window {
         title1 = new javax.swing.JLabel();
 
 
-        showNextButton.setText("Show next");
-        showNextButton.setFont(new Font("Times New Roman", Font.PLAIN, 30));
+        refreshButton.setText("Refresh");
+        refreshButton.setFont(new Font("Times New Roman", Font.PLAIN, 30));
 
-        cancelButton.setText("Cancel");
+        cancelButton.setText("Go back");
         cancelButton.setFont(new Font("Times New Roman", Font.PLAIN, 30));
 
         confirmButton.setText("Confirm");
@@ -61,47 +61,7 @@ public class AttendanceView extends views.Window {
         jTable.setRowHeight(40);
         jTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null},
-                        {null, null, null}
+
                 },
                 new String [] {
                         "Student's name", "Date", "Present"
@@ -142,7 +102,7 @@ public class AttendanceView extends views.Window {
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(showNextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(refreshButton, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addContainerGap())))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -163,7 +123,7 @@ public class AttendanceView extends views.Window {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(errLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(confirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(showNextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(refreshButton, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
                                 .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 833, Short.MAX_VALUE))

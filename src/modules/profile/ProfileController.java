@@ -100,7 +100,7 @@ public class ProfileController implements ActionListener {
                     case 0://password
                         if (val.equals(view.getTextField(1).getText()) &&
                                 !val.isEmpty()) {
-                            model.changePass(val);
+                            model.changePass(model.getMe(), val);
                             errMsg = "Success! Password changed.";
                         } else {
                             errMsg = "Error! Not the same or empty values.";
@@ -109,7 +109,7 @@ public class ProfileController implements ActionListener {
                     case 1://mail
 
                         if (!val.isEmpty()) {
-                            model.changeMail(val);
+                            model.changeMail(model.getMe(), val);
                             errMsg = "Success! Mail changed.";
                         } else {
                             errMsg = "Error! Empty value.";
@@ -120,7 +120,7 @@ public class ProfileController implements ActionListener {
 
                         if (!val.isEmpty()) {
                             if (model.getUserType() == Model.UserType.admin) {
-                                model.changeName(val);
+                                model.changeName(model.getMe(), val);
                                 errMsg = "Success! Name changed.";
                             } else {
                                 model.askForChange(val, "name");

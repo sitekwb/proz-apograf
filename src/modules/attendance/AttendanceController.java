@@ -1,21 +1,16 @@
 package modules.attendance;
 
-import data.Attendance;
 import data.Group;
 import data.Student;
 import mains.Model;
 import mains.controllers.PersonController;
 import modules.myclasses.MyClassesController;
 
-import javax.swing.*;
-import javax.swing.table.TableColumn;
-import java.awt.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 
 public class AttendanceController implements ActionListener {
     private AttendanceView view;
@@ -23,7 +18,6 @@ public class AttendanceController implements ActionListener {
     private Model model;
     private Group group;
     private ArrayList<Student> students;
-    private int showingState;
 
     public AttendanceView getView() {
         return view;
@@ -34,7 +28,6 @@ public class AttendanceController implements ActionListener {
         cont = controller;
         model = mod;
         group = gr;
-        showingState = 0;
         try {
             show();
         }
@@ -44,45 +37,36 @@ public class AttendanceController implements ActionListener {
         view.getClassLabel().setText(group.getName());
 
         if(model.getUserType()==Model.UserType.student){
-            view.getConfirmButton().setText("Refresh");
+            view.getConfirmButton().setEnabled(false);
             view.getTable().setEnabled(false);
         }
         view.getCancelButton().addActionListener(this);
         view.getConfirmButton().addActionListener(this);
-        view.getShowNextButton().addActionListener(this);
+        view.getRefreshButton().addActionListener(this);
         view.setVisible(true);
 
     }
 
-    private boolean endOfGroups;
-
     private void show() throws SQLException {
-        students = model.getAttendance(showingState, group);
+        students = model.getAttendance(group);
         int i = 0;
-        try {
-            for (Student student: students) {
-                view.getTable().getModel().setValueAt(student.getName(), i, 0);
-                view.getTable().getModel().setValueAt(student.getAttendance().getDate(), i, 1);
-                view.getTable().getModel().setValueAt(student.getAttendance().isPresent(), i, 2);
-                i++;
-                if (i >= 27) {
-                    break;
-                }
-            }
-            if(i<27) {
-                endOfGroups = true;
-            }
+
+        DefaultTableModel tableModel = ((DefaultTableModel)(view.getTable().getModel()));
+        tableModel.setColumnCount(students.size());
+
+        for (Student student : students) {
+            view.getTable().getModel().setValueAt(student.getName(), i, 0);
+            view.getTable().getModel().setValueAt(student.getAttendance().getDate(), i, 1);
+            view.getTable().getModel().setValueAt(student.getAttendance().isPresent(), i, 2);
+            i++;
         }
-        catch(ArrayIndexOutOfBoundsException e){
-            model.signOut();
-            cont.signOut();
-        }
+
     }
 
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getActionCommand().equals("Cancel")){
+        if(e.getActionCommand().equals("Go back")){
             if(model.getUserType()==Model.UserType.student){
                 cont.setWelcomeWindow();
             }
@@ -117,22 +101,6 @@ public class AttendanceController implements ActionListener {
                 view.getErrLabel().setText("Error. Try again.");
             }
 
-        }
-        else{//show next
-            if(endOfGroups){
-                showingState=0;
-                endOfGroups=false;
-            }
-            else{
-                showingState++;
-            }
-            try {
-                show();
-                view.getErrLabel().setText("Next students shown.");
-            }
-            catch(SQLException sqlException){
-                view.getErrLabel().setText("Error! Try again.");
-            }
         }
 
     }

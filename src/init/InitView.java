@@ -7,7 +7,7 @@ import java.awt.*;
  * @author Wojciech Sitek
  * @since 1.0, 05/09/2018
  *
- * InitView is a front end class, part of the package views, visualising the views window
+ * InitView is a front end class, normal of the package views, visualising the views window
  * (it extends JFrame class),
  * which functions are:
  * <ul>

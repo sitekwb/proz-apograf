@@ -70,7 +70,7 @@ public class MyClassesController implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getActionCommand().equals("Cancel")){
+        if(e.getActionCommand().equals("Go back")){
             cont.setWelcomeWindow();
             view.setVisible(false);
         }
