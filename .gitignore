@@ -1,4 +1,6 @@
-out
+out/production
+lib
+bin
 Apograf.iml
 .idea
 
