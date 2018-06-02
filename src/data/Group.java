@@ -24,6 +24,9 @@ public class Group {
         id = result.getInt("id");
         name = result.getString("name");
     }
+    public Group(int groupId)throws SQLException{
+
+    }
 
     public Group(int tid, String tname)throws SQLException{
         if(Model.isHacker(tname)){

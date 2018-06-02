@@ -65,14 +65,8 @@ public class PersonController implements ActionListener {
                     TimetableController timetableController = new TimetableController(this, model);
                     window = timetableController.getView();
                 } else if (e.getSource() == window.getMenuItem(MenuButtons.viewAttendance)) {
-                    if(model.getUserType()==Model.UserType.student) {
-                        AttendanceController attendanceController = new AttendanceController(this, model, model.getMe().getGroup());
-                        window = attendanceController.getView();
-                    }
-                    else {//teacher or admin => they need to choose class
-                        MyClassesController myClassesController = new MyClassesController(this, model,true);
-                        window = myClassesController.getView();
-                    }
+                    MyClassesController myClassesController = new MyClassesController(this, model,true);
+                    window = myClassesController.getView();
                 } else { //if(e.getSource() == window.getMenuItem(MenuButtons.profile)){
                     ProfileController profileController = new ProfileController(this, model);
                     window = profileController.getView();

@@ -110,7 +110,7 @@ public class AttendanceController implements ActionListener {
                 }
             }
             try{
-                model.updateAttendance(students);
+                model.updateAttendance(students, group);
                 view.getErrLabel().setText("Success! Attendance taken");
             }
             catch(SQLException sqlException){

@@ -109,8 +109,7 @@ public class Model {
                     break;
                 case student:
                 default:
-                    query = "SELECT Students.id, mail, pass, Students.name, Classes.name, student_id, class FROM Students " +
-                            "INNER JOIN Classes ON Students.class=Classes.id WHERE mail='" + mail + "' LIMIT 1;";
+                    query = "SELECT * FROM Students WHERE mail='" + mail + "' LIMIT 1;";
                     me = new Student(statement.executeQuery(query));
             }
             statement.close();
@@ -315,7 +314,11 @@ public class Model {
                     " on Teachersclasses.class=Classes.id WHERE Teachersclasses.teacher="+me.getId()+
                     " AND Classes.id >= " + lastId + " ORDER BY Classes.id LIMIT 27;";
         }
-        else throw new SQLException();//student
+        else{ //if(userType == UserType.student){
+            query = "SELECT * FROM Classes INNER JOIN Studentsclasses" +
+                    " ON Studentsclasses.class=Classes.id WHERE Studentsclasses.student="+me.getId()+
+                    " AND Classes.id >= " + lastId + " ORDER BY Classes.id LIMIT 27;";
+        }
         ResultSet result = stat.executeQuery(query);
         ArrayList<Group> groups = new ArrayList<Group>();
         for(int i=0;i<27;i++){
@@ -340,11 +343,10 @@ public class Model {
         String query = "SELECT Students.id, Students.name, date, present FROM Attendance " +
                 "INNER JOIN Students ON Attendance.student=Students.id WHERE ";
         if(userType==UserType.student){
-            query += "Students.id="+me.getId()+";";
+            query += "Students.id="+me.getId()+" AND ";
         }
-        else{
-            query += "Attendance.class="+group.getId()+";";
-        }
+        query+="Attendance.class="+group.getId()+";";
+
         ResultSet result = stat.executeQuery(query);
         ArrayList<Student> students = new ArrayList<Student>();
         for(int i=0;i<27;i++){
@@ -360,15 +362,14 @@ public class Model {
         stat.close();
         return students;
     }
-    public void updateAttendance(ArrayList<Student> students) throws SQLException{
+    public void updateAttendance(ArrayList<Student> students, Group group) throws SQLException{
         Statement stat = conn.createStatement();
-        String query = "UPDATE Attendance SET present = CASE ";
+        String query = "";
         for(Student student: students){
-            query += "WHEN student="+student.getId()+
-                    " AND class="+student.getGroup().getId()+" AND date='"+student.getAttendance().getDate()+"' THEN "+student.getAttendance().isPresent()+" ";
+            query = "UPDATE Attendance SET present = "+student.getAttendance().isPresent()+" WHERE student="+student.getId()+
+                    " AND class="+group.getId()+" AND date='"+student.getAttendance().getDate()+"';\n";
+            stat.executeUpdate(query);
         }
-        query += "END;";
-        stat.executeUpdate(query);
         stat.close();
     }
 }

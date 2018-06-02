@@ -5,7 +5,7 @@ import mains.controllers.PersonController;
 
 import javax.swing.*;
 
-public class MyStudentsTeachersController extends JInternalFrame {
+public class MyStudentsTeachersController {
     private MyStudentsTeachersView view;
 
     public MyStudentsTeachersView getView() {

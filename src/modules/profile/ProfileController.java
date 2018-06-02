@@ -54,8 +54,8 @@ public class ProfileController implements ActionListener {
                 view.getLabel(3).setText("Student ID: "+((Student)(model.getMe())).getStudentID());
                 view.getButton(3).setText("Ask for change of student ID");
 
-                view.getLabel(4).setText("Group: "+((Student)(model.getMe())).getGroup());
-                view.getButton(4).setText("Ask for change of group");
+                view.getLabel(4).setText("Degree: "+((Student)(model.getMe())).getGenGroup());
+                view.getButton(4).setText("Ask for change of degree");
                 break;
             case teacher:
                 view.getButton(2).setText("Ask for change of name");

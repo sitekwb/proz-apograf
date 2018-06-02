@@ -14,5 +14,4 @@ public class Teacher extends Person {
         admin = result.getBoolean("admin");
     }
     public boolean isAdmin(){return admin;}
-    public Group getGroup(){ return null;}
 }
