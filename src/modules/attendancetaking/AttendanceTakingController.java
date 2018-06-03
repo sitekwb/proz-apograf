@@ -44,7 +44,6 @@ public class AttendanceTakingController implements ActionListener {
         catch(SQLException e){
             view.getErrLabel().setText("Error in connection. Try again.");
         }
-        view.getClassLabel().setText(group.getName());
         view.getCancelButton().addActionListener(this);
         view.getConfirmButton().addActionListener(this);
         view.getShowNextButton().addActionListener(this);

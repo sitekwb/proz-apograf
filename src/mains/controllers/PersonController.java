@@ -1,7 +1,5 @@
 package mains.controllers;
 
-import modules.attendance.AttendanceController;
-import modules.attendancetaking.AttendanceTakingController;
 import mains.Model;
 import modules.myclasses.MyClassesController;
 import modules.mystudentsteachers.MyStudentsTeachersController;

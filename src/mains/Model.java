@@ -13,15 +13,11 @@ import static exceptions.ConnException.ErrorTypes.*;
 public class Model {
     private Connection conn;
 
-    public enum UserType {admin, student, teacher}
+    public enum UserType {admin, student, teacher};
 
-    ;
     private UserType userType;
     Person me;
 
-    public Model() throws SQLException{
-
-    }
 
     /**
      * Method checkUser gets information from the database tables (Teachers, Students and Admins)
@@ -303,15 +299,21 @@ public class Model {
         stat.close();
     }
     public void addGroup(Person person, int groupId) throws SQLException{
-        String table;
+        String table,query;
         if(person instanceof Student){
             table = "Studentsclasses (student, class) ";
+            query = "student, class FROM Studentsclasses WHERE student=";
         }
         else {
             table = "Teachersclasses (teacher, class) ";
+            query = "teacher, class FROM Teachersclasses WHERE teacher=";
         }
         Statement stat = conn.createStatement();
-        stat.executeUpdate("INSERT INTO "+table+" VALUES ("+person.getId()+", "+groupId+");");
+
+        ResultSet result = stat.executeQuery("SELECT "+query+person.getId()+" AND class="+groupId+";");
+        if(!result.next()) {//there is no this class in database for this person
+            stat.executeUpdate("INSERT INTO " + table + " VALUES (" + person.getId() + ", " + groupId + ");");
+        }
         stat.close();
     }
     private int lastId;
@@ -481,10 +483,7 @@ public class Model {
     public ArrayList<Group> getTimetable() throws SQLException{
         Statement stat = conn.createStatement();
         String query;
-        if(userType==UserType.admin) {
-            throw new SQLException();
-        }
-        else if(userType == UserType.teacher){
+        if(userType == UserType.teacher || userType==UserType.admin){
             query = "SELECT * FROM Classes INNER JOIN Teachersclasses" +
                     " ON Teachersclasses.class=Classes.id WHERE Teachersclasses.teacher="+me.getId()+
                     " ORDER BY Classes.day, Classes.start_hour;";

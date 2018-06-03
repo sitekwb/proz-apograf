@@ -5,7 +5,6 @@ import java.awt.*;
 
 public class AttendanceTakingView extends views.Window {
     private JButton cancelButton;
-    private JLabel classLabel;
     private javax.swing.JButton confirmButton;
     private javax.swing.JLabel errLabel;
     private JButton showNextButton;
@@ -15,9 +14,7 @@ public class AttendanceTakingView extends views.Window {
     JButton getCancelButton(){
         return cancelButton;
     }
-    JLabel getClassLabel(){
-        return classLabel;
-    }
+
     JButton getConfirmButton(){
         return confirmButton;
     }
@@ -40,7 +37,6 @@ public class AttendanceTakingView extends views.Window {
         confirmButton = new JButton();
         title = new JLabel();
         errLabel = new JLabel();
-        classLabel = new JLabel();
         students = new JCheckBox[27];
         for(int i=0; i<27;i++) {
             students[i] = new JCheckBox();
@@ -62,8 +58,6 @@ public class AttendanceTakingView extends views.Window {
         errLabel.setText("Choose present students:");
         errLabel.setFont(new Font("Times New Roman", Font.PLAIN, 40));
 
-        classLabel.setText("CLASS");
-        classLabel.setFont(new Font("Times New Roman", Font.PLAIN, 40));
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -126,6 +120,7 @@ public class AttendanceTakingView extends views.Window {
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(showNextButton, GroupLayout.PREFERRED_SIZE, 223, GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap())
+
                         .addComponent(title, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(

@@ -5,51 +5,93 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+/**
+ * Class from View part of MVC model, inherited by all other view classes.
+ * @see JFrame
+ */
 public class Window extends JFrame {
-    protected javax.swing.JMenuBar menuBar;
-    protected javax.swing.JMenu modulesMenu;
-    protected javax.swing.JMenu attendanceMenu;
-    protected javax.swing.JMenuItem exitButton;
-    protected javax.swing.JMenuItem myStudentsButton;
-    protected javax.swing.JMenuItem myTeachersButton;
-    protected javax.swing.JMenu optionsMenu;
-    protected javax.swing.JMenuItem signOutButton;
-    protected javax.swing.JMenuItem takeAttendanceButton;
-    protected javax.swing.JMenuItem timetableButton;
-    protected javax.swing.JMenuItem viewAttendanceButton;
-    protected javax.swing.JMenuItem profileButton;
+    protected JMenuBar menuBar;
+    protected JMenu modulesMenu;
+    protected JMenu attendanceMenu;
+    protected JMenuItem exitButton;
+    protected JMenuItem myStudentsButton;
+    protected JMenuItem myTeachersButton;
+    protected JMenu optionsMenu;
+    protected JMenuItem signOutButton;
+    protected JMenuItem takeAttendanceButton;
+    protected JMenuItem timetableButton;
+    protected JMenuItem viewAttendanceButton;
+    protected JMenuItem profileButton;
 
 
-
+    /**
+     * Array of menuItems, initialized in constructor of this class. Created for easier access to menuItems.
+     */
     protected JMenuItem buttonArray[];
 
+    /**
+     * Internal enum class, indicating names for menu items. This corresponds to array {@link Window#buttonArray}.
+     */
+    public enum MenuButtons{exit,myStudents,myTeachers,signOut,takeAttendance,timetable,
+        viewAttendance,profile};
+    /**
+     * Static value, initialized in constructor, indicating size of array {@link Window#buttonArray}.
+     */
+    public static int buttonArraySize;
 
+    /**
+     * Get method for items of menu, created in constructor.
+     * It makes use of {@link Window#buttonArray} and {@link Window.MenuButtons}.
+     * @param button {@link Window.MenuButtons} value, indicating, which menu item to get
+     * @return Corresponding menu item
+     */
+    public JMenuItem getMenuItem(MenuButtons button){
+        return buttonArray[button.ordinal()];
+    }
+
+    /**
+     Get method for items of menu, created in constructor.
+     * It makes use of {@link Window#buttonArray} and {@link Window.MenuButtons}.
+     * @param i integer value, indicating, which menu item to get
+     * @return Corresponding menu item
+     * @throws ArrayIndexOutOfBoundsException thrown if parameter i is incorrect
+     */
+    public JMenuItem getMenuItem(int i) throws ArrayIndexOutOfBoundsException{
+        if(i<0 || i>buttonArraySize-1){
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        return buttonArray[i];
+    }
+
+    /**
+     * Public constructor of class, building a {@link JFrame} with menu bar
+     */
     public Window(){
 
 
-        menuBar = new javax.swing.JMenuBar();
+        menuBar = new JMenuBar();
         menuBar.setFont(new Font("Times New Roman",Font.PLAIN,30));
-        optionsMenu = new javax.swing.JMenu();
+        optionsMenu = new JMenu();
         optionsMenu.setFont(new Font("Times New Roman",Font.PLAIN,30));
-        signOutButton = new javax.swing.JMenuItem();
+        signOutButton = new JMenuItem();
         signOutButton.setFont(new Font("Times New Roman",Font.PLAIN,30));
-        exitButton = new javax.swing.JMenuItem();
+        exitButton = new JMenuItem();
         exitButton.setFont(new Font("Times New Roman",Font.PLAIN,30));
-        modulesMenu = new javax.swing.JMenu();
+        modulesMenu = new JMenu();
         modulesMenu.setFont(new Font("Times New Roman",Font.PLAIN,30));
-        timetableButton = new javax.swing.JMenuItem();
+        timetableButton = new JMenuItem();
         timetableButton.setFont(new Font("Times New Roman",Font.PLAIN,30));
-        attendanceMenu = new javax.swing.JMenu();
+        attendanceMenu = new JMenu();
         attendanceMenu.setFont(new Font("Times New Roman",Font.PLAIN,30));
-        takeAttendanceButton = new javax.swing.JMenuItem();
+        takeAttendanceButton = new JMenuItem();
         takeAttendanceButton.setFont(new Font("Times New Roman",Font.PLAIN,30));
-        viewAttendanceButton = new javax.swing.JMenuItem();
+        viewAttendanceButton = new JMenuItem();
         viewAttendanceButton.setFont(new Font("Times New Roman",Font.PLAIN,30));
-        myStudentsButton = new javax.swing.JMenuItem();
+        myStudentsButton = new JMenuItem();
         myStudentsButton.setFont(new Font("Times New Roman",Font.PLAIN,30));
-        myTeachersButton = new javax.swing.JMenuItem();
+        myTeachersButton = new JMenuItem();
         myTeachersButton.setFont(new Font("Times New Roman",Font.PLAIN,30));
-        profileButton = new javax.swing.JMenuItem();
+        profileButton = new JMenuItem();
         profileButton.setFont(new Font("Times New Roman",Font.PLAIN,30));
 
 
@@ -74,16 +116,16 @@ public class Window extends JFrame {
         optionsMenu.setText("Options");
 
 
-        signOutButton.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
+        signOutButton.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
         signOutButton.setText("Sign out");
         optionsMenu.add(signOutButton);
 
-        exitButton.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
+        exitButton.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
         exitButton.setText("Exit program");
         optionsMenu.add(exitButton);
 
 
-        profileButton.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_MASK));
+        profileButton.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_MASK));
         profileButton.setText("View my profile");
         optionsMenu.add(profileButton);
 
@@ -93,26 +135,26 @@ public class Window extends JFrame {
         modulesMenu.setText("Modules");
 
 
-        timetableButton.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        timetableButton.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         timetableButton.setText("My Timetable");
         modulesMenu.add(timetableButton);
 
         attendanceMenu.setText("Attendance");
 
-        takeAttendanceButton.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        takeAttendanceButton.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         takeAttendanceButton.setText("Take attendance");
         attendanceMenu.add(takeAttendanceButton);
 
-        viewAttendanceButton.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        viewAttendanceButton.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         viewAttendanceButton.setText("View/change attendance");
         attendanceMenu.add(viewAttendanceButton);
         modulesMenu.add(attendanceMenu);
 
-        myStudentsButton.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        myStudentsButton.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         myStudentsButton.setText("My Students");
         modulesMenu.add(myStudentsButton);
 
-        myTeachersButton.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        myTeachersButton.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         myTeachersButton.setText("My Teachers");
         modulesMenu.add(myTeachersButton);
 
@@ -129,17 +171,5 @@ public class Window extends JFrame {
     }
 
 
-    public enum MenuButtons{exit,myStudents,myTeachers,signOut,takeAttendance,timetable,
-        viewAttendance,profile};
-    public static int buttonArraySize;
 
-    public JMenuItem getMenuItem(MenuButtons button){
-        return buttonArray[button.ordinal()];
-    }
-    public JMenuItem getMenuItem(int i) throws ArrayIndexOutOfBoundsException{
-        if(i<0 || i>buttonArraySize-1){
-            throw new ArrayIndexOutOfBoundsException();
-        }
-        return buttonArray[i];
-    }
 }

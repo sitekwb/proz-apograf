@@ -110,6 +110,9 @@ public class MyStudentsTeachersController implements ActionListener {
             }
             i++;
         }
+        for(int j=0; j<view.getTable().getModel().getColumnCount(); j++){
+            view.getTable().getModel().setValueAt("", i, j);
+        }
 
 
     }
@@ -175,16 +178,13 @@ public class MyStudentsTeachersController implements ActionListener {
                             JLabel text = new JLabel("What is the day of new class "+newGroup+"? (1-7, 1=Monday)");
                             text.setFont(new Font("Times New Roman", Font.PLAIN, 40));
                             int day = Integer.parseInt(JOptionPane.showInputDialog(text,text));
-                            if(day == JOptionPane.CANCEL_OPTION || day<1 || day>7){
+                            if( day<1 || day>7){
                                 i++;
                                 continue;
                             }
                             text.setText("What is the start hour and finish hour of new class "+newGroup+"? (hh:mm-hh:mm)");
                             String time = JOptionPane.showInputDialog(text,text);
-                            if(time.equals(JOptionPane.CANCEL_OPTION)){
-                                i++;
-                                continue;
-                            }
+
                             Group group;
                             try{
                                 group = new Group(newGroup, day, time);

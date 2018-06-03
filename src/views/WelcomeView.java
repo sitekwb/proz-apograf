@@ -4,8 +4,17 @@ package views;
 import javax.swing.*;
 import java.awt.*;
 
+
+/**
+ * Class from View part of MVC model of programming in Java. Contains welcoming components shown
+ * after logging into the program. Class inherits from Window.
+ * @see Window
+ */
 public class WelcomeView extends views.Window {
 
+    /**
+     * Constructor of this view class, initialising JLabels and setting their layout on the screen.
+     */
     public WelcomeView(){
 
         JLabel welcomeLabel = new javax.swing.JLabel();

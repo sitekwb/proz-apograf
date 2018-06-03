@@ -1,18 +1,17 @@
 package mains;
 
 import mains.controllers.Controller;
-import views.Window;
 
-import java.sql.SQLException;
-
+/**
+ * Class containing main method
+ */
 public class Main {
+    /**
+     * Main method, initialising main {@link Controller} and, as its parameter giving {@link Model},
+     * from model of programming MVC.
+     * @param args unused arguments
+     */
     public static void main(String [] args){
-        //Window window = new Window();
-        try {
-            Controller controller = new Controller(new Model());
-        }
-        catch(SQLException e){
-            System.exit(1);
-        }
+        Controller controller = new Controller(new Model());
     }
 }
