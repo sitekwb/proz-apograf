@@ -13,6 +13,7 @@ import modules.myclasses.MyClassesController;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -40,6 +41,7 @@ public class MyStudentsTeachersController implements ActionListener {
             tableModel.addColumn("Class date");
             view.getConfirmButton().setEnabled(false);
             view.getTable().setEnabled(false);
+            view.getTitle1().setText("My Teachers");
         }
         else if(model.getUserType()==Model.UserType.teacher){
             tableModel.addColumn("Student ID");
@@ -48,12 +50,17 @@ public class MyStudentsTeachersController implements ActionListener {
             tableModel.addColumn("Class date");
             view.getConfirmButton().setEnabled(false);
             view.getTable().setEnabled(false);
+            view.getTitle1().setText("My Students");
         }
         else{//admin
             tableModel.addColumn("Enter new password");
             if(wantStudentsFlag) {
                 tableModel.addColumn("Student_id");
                 tableModel.addColumn("Degree");
+                view.getTitle1().setText("My Students");
+            }
+            else{
+                view.getTitle1().setText("My Teachers");
             }
             tableModel.addColumn("Enter new class (full name of class)");
         }
@@ -155,10 +162,40 @@ public class MyStudentsTeachersController implements ActionListener {
                         }
                     }
 
-                    String newGroup = (String)view.getTable().getValueAt(i,5);
-                    if(! newGroup.isEmpty()){
-                        int groupId = model.getGroupIdByName(newGroup);
-                        model.addGroup(person, groupId);
+                    String newGroup = (String)view.getTable().getValueAt(i,(wantStudentsFlag)?5:3);
+                    if(!(newGroup==null || newGroup.equals(""))){
+                        try {
+                            int groupId = model.getGroupIdByName(newGroup);
+                            model.addGroup(person, groupId);
+                        }
+                        catch(ConnException connExc){//group not found => we want to create new
+                            if(connExc.getErrorType()!=ConnException.ErrorTypes.notExitsting){
+                                throw connExc;
+                            }
+                            JLabel text = new JLabel("What is the day of new class "+newGroup+"? (1-7, 1=Monday)");
+                            text.setFont(new Font("Times New Roman", Font.PLAIN, 40));
+                            int day = Integer.parseInt(JOptionPane.showInputDialog(text,text));
+                            if(day == JOptionPane.CANCEL_OPTION || day<1 || day>7){
+                                i++;
+                                continue;
+                            }
+                            text.setText("What is the start hour and finish hour of new class "+newGroup+"? (hh:mm-hh:mm)");
+                            String time = JOptionPane.showInputDialog(text,text);
+                            if(time.equals(JOptionPane.CANCEL_OPTION)){
+                                i++;
+                                continue;
+                            }
+                            Group group;
+                            try{
+                                group = new Group(newGroup, day, time);
+                            }
+                            catch(Exception exception){
+                                i++;
+                                continue;
+                            }
+                            model.createGroup(group);
+                            model.addGroup(person, group.getId());
+                        }
                     }
                     i++;
                 }

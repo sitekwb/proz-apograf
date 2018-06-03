@@ -97,7 +97,7 @@ public class AttendanceTakingController implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getActionCommand().equals("Cancel")){
+        if(e.getActionCommand().equals("Go back")){
             MyClassesController myClassesController = new MyClassesController(cont, model,false);
             cont.setWindow(myClassesController.getView());
             view.setVisible(false);

@@ -1,3 +1,3 @@
 package data;
 
-public enum BuildingType{normal, full};
+public enum BuildingType{normal, full, fullAdmin};

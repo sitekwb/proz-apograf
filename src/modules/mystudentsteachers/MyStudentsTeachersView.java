@@ -29,6 +29,7 @@ public class MyStudentsTeachersView extends views.Window {
         return refreshButton;
     }
     JTable getTable(){ return jTable; }
+    JLabel getTitle1(){ return title1; }
 
     public MyStudentsTeachersView(){
         refreshButton = new javax.swing.JButton();
@@ -85,7 +86,6 @@ public class MyStudentsTeachersView extends views.Window {
         });
         jScrollPane.setViewportView(jTable);
 
-        title1.setText("View attendance");
         title1.setFont(new Font("Times New Roman", Font.PLAIN, 100));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

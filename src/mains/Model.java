@@ -276,10 +276,31 @@ public class Model {
             throw new ConnException(hacker);
         }
         Statement stat = conn.createStatement();
-        ResultSet result = stat.executeQuery("SELECT id FROM Classes WHERE name='"+groupName+"';");
+        String query = "SELECT id FROM Classes WHERE name='"+groupName+"';";
+        ResultSet result = stat.executeQuery(query);
+        int val;
+        if(result.next()) {
+            val = result.getInt("id");
+        }
+        else throw new ConnException(notExitsting);
         stat.close();
+        return val;
+    }
+    public void createGroup(Group group)throws SQLException, ConnException{
+        Statement stat = conn.createStatement();
+        String query;
+        if(isHacker(group.getName())){
+            throw new ConnException(hacker);
+        }
+        query="INSERT INTO Classes (name, day, start_hour, finish_hour) VALUES ('"+group.getName()+"', "+
+                (group.getDayId()+1)+", '"+group.getStartHour()+"', '"+group.getFinishHour()+"');";
+        stat.executeUpdate(query);
+
+        query = "SELECT id FROM Classes WHERE name='"+group.getName()+"';";
+        ResultSet result = stat.executeQuery(query);
         result.next();
-        return result.getInt("id");
+        group.setId(result.getInt("id"));
+        stat.close();
     }
     public void addGroup(Person person, int groupId) throws SQLException{
         String table;
@@ -302,8 +323,9 @@ public class Model {
             lastId=0;
         }
         Statement stat = conn.createStatement();
-        String query = "SELECT id, name FROM Students WHERE class="+group.getId()+" AND id >= "+lastId+
-                " ORDER BY id LIMIT 27;";
+        String query = "SELECT Students.id, Students.name FROM Students JOIN Studentsclasses" +
+                " ON Students.id=Studentsclasses.student WHERE class="+group.getId()+" AND Students.id >= "+lastId+
+                " ORDER BY Students.id LIMIT 27;";
         ResultSet result = stat.executeQuery(query);
         ArrayList<Student> students = new ArrayList<>();
         for(int i=0;i<27;i++){
@@ -421,19 +443,17 @@ public class Model {
         }
         else {//admin
             if(onlyStudents) {
-                query = "SELECT * FROM Students LEFT JOIN Studentsclasses ON Students.id=Studentsclasses.student " +
-                        "LEFT JOIN Classes ON Studentsclasses.class=Classes.id;";
+                query = "SELECT * FROM Students;";
                 ResultSet result = stat.executeQuery(query);
                 while (result.next()) {
-                    people.add(new Student(result, BuildingType.full));
+                    people.add(new Student(result, BuildingType.fullAdmin));
                 }
             }
             else {
-                query = "SELECT * FROM Teachers LEFT JOIN Teachersclasses ON Teachers.id=Teachersclasses.teacher " +
-                        "LEFT JOIN Classes ON Teachersclasses.class=Classes.id;";
+                query = "SELECT * FROM Teachers;";
                 ResultSet result = stat.executeQuery(query);
                 while (result.next()) {
-                    people.add(new Teacher(result, BuildingType.full));
+                    people.add(new Teacher(result, BuildingType.fullAdmin));
                 }
             }
         }
@@ -456,6 +476,32 @@ public class Model {
                     ((Student)person).getGenGroup()+"');";
         }
         stat.executeUpdate(query);
+    }
+
+    public ArrayList<Group> getTimetable() throws SQLException{
+        Statement stat = conn.createStatement();
+        String query;
+        if(userType==UserType.admin) {
+            throw new SQLException();
+        }
+        else if(userType == UserType.teacher){
+            query = "SELECT * FROM Classes INNER JOIN Teachersclasses" +
+                    " ON Teachersclasses.class=Classes.id WHERE Teachersclasses.teacher="+me.getId()+
+                    " ORDER BY Classes.day, Classes.start_hour;";
+        }
+        else{ //if(userType == UserType.student){
+            query = "SELECT * FROM Classes INNER JOIN Studentsclasses" +
+                    " ON Studentsclasses.class=Classes.id WHERE Studentsclasses.student="+me.getId()+
+                    " ORDER BY Classes.day, Classes.start_hour;";
+        }
+        ResultSet result = stat.executeQuery(query);
+        ArrayList<Group> groups = new ArrayList<Group>();
+        while(result.next()) {
+            Group group = new Group(result, BuildingType.full);
+            groups.add(group);
+        }
+        stat.close();
+        return groups;
     }
 
 }

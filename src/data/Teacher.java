@@ -26,7 +26,7 @@ public class Teacher extends Person {
         if(buildingType==full){
             group = new Group(result, full);
         }
-        else{
+        else if(buildingType==normal){
             result.next();
         }
         id = result.getInt("id");

@@ -50,7 +50,7 @@ public class AttendanceTakingView extends views.Window {
         showNextButton.setText("Show next");
         showNextButton.setFont(new Font("Times New Roman", Font.PLAIN, 30));
 
-        cancelButton.setText("Cancel");
+        cancelButton.setText("Go back");
         cancelButton.setFont(new Font("Times New Roman", Font.PLAIN, 30));
 
         confirmButton.setText("Confirm");

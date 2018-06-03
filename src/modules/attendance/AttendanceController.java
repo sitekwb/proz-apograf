@@ -52,7 +52,7 @@ public class AttendanceController implements ActionListener {
         int i = 0;
 
         DefaultTableModel tableModel = ((DefaultTableModel)(view.getTable().getModel()));
-        tableModel.setColumnCount(students.size());
+        tableModel.setRowCount(students.size());
 
         for (Student student : students) {
             view.getTable().getModel().setValueAt(student.getName(), i, 0);

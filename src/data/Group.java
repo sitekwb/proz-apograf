@@ -1,17 +1,19 @@
 package data;
 
+import exceptions.ConnException;
 import mains.Model;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.time.LocalTime;
 
 import static data.BuildingType.*;
 
 public class Group {
     int id;
     String name;
-    int day;
+    int day;//from 1 to 7, 1=Monday
     Time start_hour, finish_hour;
     public Group(ResultSet result, BuildingType buildingType) throws SQLException {
         if(buildingType== normal){
@@ -35,6 +37,30 @@ public class Group {
         }
         id = tid;
         name = tname;
+    }
+    public Group(String groupName, int groupDay, String time)throws Exception {
+        if(Model.isHacker(groupName) || groupDay<1 || groupDay>7){
+            throw new Exception();
+        }
+        name = groupName;
+        day = groupDay;
+        setTime(time);
+    }
+    private void setTime(String time)throws Exception{//hh:mm-hh:mm
+        start_hour = new Time(Integer.parseInt(time.substring(0,2)), Integer.parseInt(time.substring(3,5)),0);
+        finish_hour = new Time(Integer.parseInt(time.substring(6,8)), Integer.parseInt(time.substring(9,11)),0);
+    }
+    public Time getStartHour(){ return start_hour; }
+    public Time getFinishHour(){ return finish_hour; }
+    public int getDayId(){
+        return day-1;
+    }
+    public String getTime(){
+        String value = String.format("%02d",start_hour.getHours())+":"+
+                String.format("%02d",start_hour.getMinutes())+"-"+
+                String.format("%02d",finish_hour.getHours())+":"+
+                String.format("%02d",finish_hour.getMinutes());
+        return value;
     }
     public String getSchedule(){
         String value;
@@ -65,4 +91,5 @@ public class Group {
     }
     public String getName(){ return name;   }
     public int getId(){ return id;}
+    public void setId(int groupId){ id = groupId; }
 }
