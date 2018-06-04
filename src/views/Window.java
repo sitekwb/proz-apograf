@@ -97,8 +97,8 @@ public class Window extends JFrame {
 
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds(0,0,(int)screenSize.getWidth()/2,(int)screenSize.getHeight());
-        setMinimumSize(new Dimension((int)screenSize.getWidth()/2,(int)screenSize.getHeight()));
+        setBounds(0,0,(int)screenSize.getWidth(),(int)screenSize.getHeight());
+        setMinimumSize(new Dimension((int)screenSize.getWidth(),(int)screenSize.getHeight()));
 
 
         addWindowListener(new WindowAdapter(){

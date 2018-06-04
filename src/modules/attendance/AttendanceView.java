@@ -3,6 +3,10 @@ package modules.attendance;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Appropriate view to AttendanceController.
+ * @see AttendanceController
+ */
 public class AttendanceView extends views.Window {
     private JButton cancelButton;
     private JButton confirmButton;
@@ -13,23 +17,58 @@ public class AttendanceView extends views.Window {
     private JLabel classLabel;
     private JLabel title1;
 
+    /**
+     * Get method.
+     * @return cancelButton
+     */
     JButton getCancelButton(){
         return cancelButton;
     }
+
+    /**
+     * Get method.
+     * @return classLabel.
+     */
     JLabel getClassLabel(){
         return classLabel;
     }
+
+    /**
+     * Get method.
+     * @return confirmButton
+     */
     JButton getConfirmButton(){
         return confirmButton;
     }
+
+    /**
+     * Get method.
+     * @return errLabel
+     */
     JLabel getErrLabel(){
         return errLabel;
     }
+
+    /**
+     * Get method.
+     * @return refreshButton
+     */
     JButton getRefreshButton(){
         return refreshButton;
     }
-    JTable getTable(){ return jTable; }
 
+    /**
+     * Get method.
+     * @return table
+     */
+    JTable getTable(){
+        return jTable;
+    }
+
+    /**
+     * Class constructor, constructs empty table and a set of buttons and labels,
+     * which are later set by AttendanceController.
+     */
     public AttendanceView(){
         refreshButton = new JButton();
         cancelButton = new JButton();

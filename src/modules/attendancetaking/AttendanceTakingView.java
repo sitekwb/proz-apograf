@@ -3,6 +3,11 @@ package modules.attendancetaking;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Appropriate view to AttendanceTakingController, inherits menubar from Window.
+ * @see views.Window
+ * @see AttendanceTakingController
+ */
 public class AttendanceTakingView extends views.Window {
     private JButton cancelButton;
     private javax.swing.JButton confirmButton;
@@ -10,20 +15,45 @@ public class AttendanceTakingView extends views.Window {
     private JButton showNextButton;
     private javax.swing.JLabel title;
     private JCheckBox students[];
-
+    /**
+     * Get method.
+     * @return cancelButton
+     */
     JButton getCancelButton(){
         return cancelButton;
     }
 
+
+    /**
+     * Get method.
+     * @return confirmButton
+     */
     JButton getConfirmButton(){
         return confirmButton;
     }
+
+    /**
+     * Get method.
+     * @return errLabel
+     */
     JLabel getErrLabel(){
         return errLabel;
     }
+
+    /**
+     * Get method.
+     * @return showNextButton
+     */
     JButton getShowNextButton(){
         return showNextButton;
     }
+
+    /**
+     * Get method
+     * @param i number of student
+     * @return JCheckBox of appropriate student
+     * @throws ArrayIndexOutOfBoundsException when i is inappropriate
+     */
     JCheckBox getStudent(int i)throws ArrayIndexOutOfBoundsException{
         if(i<0 || i>26){
             throw new ArrayIndexOutOfBoundsException();
@@ -31,6 +61,9 @@ public class AttendanceTakingView extends views.Window {
         return students[i];
     }
 
+    /**
+     * Class constructor
+     */
     public AttendanceTakingView(){
         showNextButton = new JButton();
         cancelButton = new JButton();

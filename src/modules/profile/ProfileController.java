@@ -9,11 +9,42 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
+/**
+ * Module controller class, showing and enabling to edit information my profile.
+ * @see ActionListener
+ */
 public class ProfileController implements ActionListener {
+    /**
+     * Superior controller
+     * @see PersonController
+     */
     private PersonController cont;
+    /**
+     * Reference to model
+     * @see Model
+     */
     private Model model;
+    /**
+     * View, initialised by constructor.
+     * @see ProfileView
+     */
     private ProfileView view;
-    public ProfileController(PersonController controller, Model mod) throws Exception{
+
+    /**
+     * Get method.
+     * @return {@link #view}
+     */
+    public ProfileView getView(){
+        return view;
+    }
+
+    /**
+     * Class constructor.
+     * @param controller superior controller
+     * @param mod model
+     * @throws ConnException unknown errors may occur
+     */
+    public ProfileController(PersonController controller, Model mod) throws ConnException{
         cont = controller;
         model = mod;
         view = new ProfileView();
@@ -25,10 +56,12 @@ public class ProfileController implements ActionListener {
         }
 
     }
-    public ProfileView getView(){
-        return view;
-    }
 
+    /**
+     * Method which sets settings, shown by view.
+     * @param errMsg message set as text for password/error label in view
+     * @throws ConnException unknown errors may occur
+     */
     private void setShowingSettings(String errMsg) throws ConnException{
         for(int i=0;i<5;i++){
             view.getButton(i).setVisible(true);
@@ -78,7 +111,11 @@ public class ProfileController implements ActionListener {
     }
 
 
-
+    /**
+     * Checks if string is an integer
+     * @param s string value
+     * @return true if s is an integer, false if not.
+     */
     private static boolean isInteger(String s){
         try{
             Integer.parseInt(s);
@@ -89,8 +126,20 @@ public class ProfileController implements ActionListener {
         return true;
     }
 
+    /**
+     * Values possible to change
+     */
     private static String labels[] = {"password","mail", "name", "student ID", "group"};
+    /**
+     * Indicates which value user wants to change
+     */
     private int typeOfChange;
+
+    /**
+     * Action performed method.
+     * @param e can get actions from buttons with commands "Confirm", "Cancel"
+     * @see ProfileView
+     */
     public void actionPerformed(ActionEvent e){
         String errMsg="Password: ***";
         try {

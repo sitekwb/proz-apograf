@@ -5,7 +5,8 @@ import java.awt.*;
 
 /**
  * @author Wojciech Sitek
- * @since 1.0, 05/09/2018
+ * @version 1.0
+ * @since 1.0, 04/06/2018
  *
  * InitView is a front end class, normal of the package views, visualising the views window
  * (it extends JFrame class),
@@ -19,42 +20,75 @@ import java.awt.*;
  *
  */
 public class InitView extends JFrame {
+
+    //-----------------------PRIVATE FIELDS---------------------
     /**
-     * @param title JLabel with name of program - "Apograf"
-     * @param mailLabel JLabel specifying aim of e-mail textField on the right, with its text "E-mail:"
-     * @param passLabel JLabel specifying aim of password textField on the right, with its text "Password:"
-     * @param mailField JTextField with space for entering user's email
-     * @param passField JTextField with space for entering user's password
-     * @param logButton button, submitting logging information to controller
-     * @param registerButton button, submitting information about registration to database to controller
-     * @param errLabel normally empty label, showing errors of logging or registration
+     * Button, submitting logging information to controller.
      */
-    private static String secretCode = "abcd";
     private JButton logButton;
+    /**
+     * JTextField with space for entering user's email.
+     */
     private JTextField mailField;
+    /**
+     * JLabel specifying aim of e-mail textField on the right, with its text "E-mail:".
+     */
     private JLabel mailLabel;
+    /**
+     * JPasswordField with space for entering user's password.
+     */
     private JPasswordField passField;
+    /**
+     * JLabel specifying aim of password textField on the right, with its text "Password:".
+     */
     private JLabel passLabel;
+    /**
+     * Button, submitting information about registration to database to controller.
+     */
     private JButton registerButton;
+    /**
+     * JLabel with name of program - "Apograf".
+     */
     private JLabel title;
+    /**
+     * Normally empty label, showing errors of logging or registration
+     */
     private JLabel errLabel;
 
-    public JTextField getMailField(String sCode) throws Exception{//throws Exception{
-        if(!sCode.equals(secretCode)) throw new Exception();
+
+    //------------------GET METHODS--------------------------------
+    /**
+     * Get method.
+     * @return {@link InitView#mailField}
+     */
+    public JTextField getMailField() {
         return mailField;
     }
-    public JPasswordField getPasswordField(String sCode) throws Exception{//throws Exception{
-        if(!sCode.equals(secretCode)) throw new Exception();
+    /**
+     * Get method.
+     * @return {@link InitView#passField}
+     */
+    public JPasswordField getPasswordField(){
         return passField;
     }
-    public JButton getRegisterButton(String sCode) throws Exception{//throws Exception{
-        //if(!sCode.equals(secretCode)) throw new Exception();
+    /**
+     * Get method.
+     * @return {@link InitView#registerButton}
+     */
+    public JButton getRegisterButton(){
         return registerButton;
     }
-    public JButton getLogButton(String sCode) {//throws Exception{
-        //if(!sCode.equals(secretCode)) throw new Exception();
+    /**
+     * Get method.
+     * @return {@link InitView#logButton}
+     */
+    public JButton getLogButton(){
         return logButton;
     }
+    /**
+     * Get method.
+     * @return {@link InitView#errLabel}
+     */
     public JLabel getErrLabel() {
         return errLabel;
     }

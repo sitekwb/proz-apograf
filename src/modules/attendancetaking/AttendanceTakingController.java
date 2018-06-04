@@ -5,10 +5,8 @@ import data.Group;
 import data.Student;
 import mains.Model;
 import mains.controllers.PersonController;
-import modules.attendance.AttendanceController;
 import modules.myclasses.MyClassesController;
-import modules.myclasses.MyClassesView;
-import views.WelcomeView;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,20 +15,61 @@ import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+/**
+ * Module controller class, enabling to take attendance of students of given group.
+ * Object of this class is created only by MyClassesController, in which user can choose one group.
+ * @see MyClassesController
+ */
 public class AttendanceTakingController implements ActionListener {
+
+    /**
+     * View, initialised by constructor.
+     * @see AttendanceTakingView
+     */
     private AttendanceTakingView view;
+    /**
+     * Superior controller
+     * @see PersonController
+     */
     private PersonController cont;
+    /**
+     * Reference to model
+     * @see Model
+     */
     private Model model;
+    /**
+     * Reference to group, whose attendance is shown.
+     */
     private Group group;
+    /**
+     * Because of the fact, that there can be only 27 students at once visible, showingState indicates
+     * which set of 27 students is this.
+     */
     private int showingState;
+    /**
+     * Is true, when set of students finishes. Else false.
+     */
     private boolean endOfGroups;
+    /**
+     * ArrayList of students, shown currently in view.
+     */
     private ArrayList<Student> students;
+    /**
+     * Get method.
+     * @return {@link #view}
+     */
     public AttendanceTakingView getView() {
         return view;
     }
+
+    /**
+     * Class constructor.
+     * @param controller superior controller
+     * @param mod model
+     * @param gr group
+     */
     public AttendanceTakingController(PersonController controller, Model mod, Group gr){
         model = mod;
         cont= controller;
@@ -49,6 +88,11 @@ public class AttendanceTakingController implements ActionListener {
         view.getShowNextButton().addActionListener(this);
         view.setVisible(true);
     }
+
+    /**
+     * Gets information from model and shows appropriate table with attendance.
+     * @throws SQLException if something goes wrong in connection with database.
+     */
     private void show() throws SQLException {
         students = model.getStudents(showingState, group);
         int i = 0;
@@ -75,8 +119,13 @@ public class AttendanceTakingController implements ActionListener {
             cont.signOut();
         }
     }
+
+    /**
+     * Checks if given date is correct.
+     * @param d date of format DD-MM-YYYY
+     * @return true if is correct date, false if not
+     */
     private boolean isDate(String d){
-        //TODO check if date is good with class Group
         int day, month,year;
         try {
             day = Integer.parseInt(d.substring(0, 1));
@@ -93,7 +142,10 @@ public class AttendanceTakingController implements ActionListener {
         return true;
     }
 
-
+    /**
+     * ActionPerformed method.
+     * @param e actionevent caused by one of buttons in view - with commands "Go back", "Refresh" or "Confirm"
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("Go back")){

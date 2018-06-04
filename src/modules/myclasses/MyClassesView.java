@@ -3,6 +3,12 @@ package modules.myclasses;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Appropriate view to MyClassesController
+ * @see MyClassesController
+ * @see views.Window
+ * @see JFrame
+ */
 public class MyClassesView extends views.Window {
     private JButton cancelButton;
     private JLabel classLabel;
@@ -12,21 +18,52 @@ public class MyClassesView extends views.Window {
     private JLabel title;
     private JRadioButton groups[];
 
+    /**
+     * Get method.
+     * @return cancelButton
+     */
     JButton getCancelButton(){
         return cancelButton;
     }
+
+    /**
+     * Get method.
+     * @return classLabel.
+     */
     JLabel getClassLabel(){
         return classLabel;
     }
+
+    /**
+     * Get method.
+     * @return confirmButton
+     */
     JButton getConfirmButton(){
         return confirmButton;
     }
+
+    /**
+     * Get method.
+     * @return errLabel
+     */
     JLabel getErrLabel(){
         return errLabel;
     }
+
+    /**
+     * Get method.
+     * @return showNextButton
+     */
     JButton getShowNextButton(){
         return showNextButton;
     }
+
+    /**
+     * Get method
+     * @param i number of student
+     * @return JRadioButton of appropriate group
+     * @throws ArrayIndexOutOfBoundsException when i is inappropriate
+     */
     JRadioButton getGroup(int i)throws ArrayIndexOutOfBoundsException{
         if(i<0 || i>26){
             throw new ArrayIndexOutOfBoundsException();
@@ -34,6 +71,9 @@ public class MyClassesView extends views.Window {
         return groups[i];
     }
 
+    /**
+     * Class constructor, constructs empty JRadioButtons and a few buttons and labels.
+     */
     public MyClassesView(){
         showNextButton = new JButton();
         cancelButton = new javax.swing.JButton();

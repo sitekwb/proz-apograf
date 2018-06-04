@@ -7,25 +7,51 @@ import java.awt.*;
 
 import static exceptions.ConnException.ErrorTypes.err;
 
+/**
+ * Appropriate view to ProfileController.
+ * @see ProfileController
+ * @see views.Window
+ */
 public class ProfileView extends views.Window {
     private javax.swing.JButton jButton[];
     private javax.swing.JLabel jLabel[];
     private javax.swing.JTextField jTextField[];
     private javax.swing.JLabel title;
-    private static String secretCode = "xxxx";
+
+    /**
+     * Get method.
+     * @param i number of button, from 0 to 4
+     * @return button[i]
+     * @throws ConnException when i is inappropriate
+     */
     public JButton getButton(int i) throws ConnException{
         if(i>4 || i<0) throw new ConnException(err);
         return jButton[i];
     }
+    /**
+     * Get method.
+     * @param i number of text field, from 0 to 4
+     * @return textField[i]
+     * @throws ConnException when i is inappropriate
+     */
     public JTextField getTextField(int i)throws ConnException{
         if(i>4 || i<0) throw new ConnException(err);
         return jTextField[i];
     }
+    /**
+     * Get method.
+     * @param i number of label, from 0 to 4
+     * @return label[i]
+     * @throws ConnException when i is inappropriate
+     */
     public JLabel getLabel(int i) throws ConnException{
         if(i>4 || i<0) throw new ConnException(err);
         return jLabel[i];
     }
 
+    /**
+     * Class constructor.
+     */
     public ProfileView(){
         title = new javax.swing.JLabel();
 

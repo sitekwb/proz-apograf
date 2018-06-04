@@ -2,6 +2,9 @@ package exceptions;
 
 /**
  * Exception class inheriting from Exception, containing enum indicator of type of error in program processing.
+ * @author Wojciech Sitek
+ * @version 1.0
+ * @since 2018-06-03
  * @see Exception
  */
 public class ConnException extends Exception {

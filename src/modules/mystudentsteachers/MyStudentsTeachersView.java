@@ -3,6 +3,11 @@ package modules.mystudentsteachers;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Appropriate view to MyStudentsTeachersController.
+ * @see MyStudentsTeachersController
+ * @see views.Window
+ */
 public class MyStudentsTeachersView extends views.Window {
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton confirmButton;
@@ -13,24 +18,58 @@ public class MyStudentsTeachersView extends views.Window {
     private javax.swing.JLabel classLabel;
     private javax.swing.JLabel title1;
 
+    /**
+     * Get method.
+     * @return cancelButton
+     */
     JButton getCancelButton(){
         return cancelButton;
     }
+
+    /**
+     * Get method.
+     * @return classLabel.
+     */
     JLabel getClassLabel(){
         return classLabel;
     }
+
+    /**
+     * Get method.
+     * @return confirmButton
+     */
     JButton getConfirmButton(){
         return confirmButton;
     }
+
+    /**
+     * Get method.
+     * @return errLabel
+     */
     JLabel getErrLabel(){
         return errLabel;
     }
+
+    /**
+     * Get method.
+     * @return refreshButton
+     */
     JButton getRefreshButton(){
         return refreshButton;
     }
-    JTable getTable(){ return jTable; }
-    JLabel getTitle1(){ return title1; }
 
+    /**
+     * Get method.
+     * @return table
+     */
+    JTable getTable(){
+        return jTable;
+    }
+    JLabel getTitle1(){ return title1; }
+    /**
+     * Class constructor, constructs quasi empty table and a set of buttons and labels,
+     * which are later set by MyStudentsTeachersController.
+     */
     public MyStudentsTeachersView(){
         refreshButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();

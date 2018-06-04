@@ -7,8 +7,7 @@ import data.Teacher;
 import exceptions.ConnException;
 import mains.Model;
 import mains.controllers.PersonController;
-import modules.attendance.AttendanceView;
-import modules.myclasses.MyClassesController;
+
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -19,16 +18,49 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * Module controller class, showing and enabling to edit information about students or teachers.
+ * @see ActionListener
+ */
 public class MyStudentsTeachersController implements ActionListener {
+    /**
+     * View, initialised by constructor.
+     * @see MyStudentsTeachersView
+     */
     private MyStudentsTeachersView view;
+    /**
+     * Superior controller
+     * @see PersonController
+     */
     private PersonController cont;
+    /**
+     * Reference to model
+     * @see Model
+     */
     private Model model;
+    /**
+     * ArrayList of {@link Person} shown in view.
+     */
     private ArrayList<Person> people;
+    /**
+     * Decides whether to show students (true) or teachers (false), valid only for admin, because
+     * student and teacher have fixed users to show.
+     */
     private boolean wantStudentsFlag;
+
+    /**
+     * Get method.
+     * @return {@link #view}
+     */
     public MyStudentsTeachersView getView() {
         return view;
     }
-
+    /**
+     * Class constructor.
+     * @param controller superior controller
+     * @param mod model
+     * @param wantStudents specifies if we want to view students or teachers {@link #wantStudentsFlag}.
+     */
     public MyStudentsTeachersController(PersonController controller, Model mod, boolean wantStudents){
         wantStudentsFlag=wantStudents;
         view = new MyStudentsTeachersView();
@@ -79,6 +111,10 @@ public class MyStudentsTeachersController implements ActionListener {
 
     }
 
+    /**
+     * Gets information from model and shows appropriate students or teachers.
+     * @throws SQLException if something goes wrong in connection with database.
+     */
     private void show() throws SQLException {
         people = model.getPeople(wantStudentsFlag);
         DefaultTableModel tableModel = ((DefaultTableModel)(view.getTable().getModel()));
@@ -117,7 +153,10 @@ public class MyStudentsTeachersController implements ActionListener {
 
     }
 
-
+    /**
+     * ActionPerformed method.
+     * @param e actionevent caused by one of buttons in view - with commands "Go back", "Refresh" or "Confirm".
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("Go back")){
