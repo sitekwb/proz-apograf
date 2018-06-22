@@ -6,6 +6,8 @@ import mains.Model;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.sql.SQLException;
 
 /**
@@ -16,7 +18,7 @@ import java.sql.SQLException;
  * @since 2018-06-03
  * @see ActionListener
  */
-public class InitController implements ActionListener {
+public class InitController implements ActionListener,KeyListener {
 
     //-------------------PARAMETERS------------------------
 
@@ -48,6 +50,9 @@ public class InitController implements ActionListener {
         v.getRegisterButton().addActionListener(this);
         v.getLogButton().addActionListener(this);
 
+        v.getMailField().addKeyListener(this);
+        v.getPasswordField().addKeyListener(this);
+
     }
 
     /**
@@ -68,7 +73,7 @@ public class InitController implements ActionListener {
             String mail = v.getMailField().getText();
             String pass = String.valueOf(v.getPasswordField().getPassword());
 
-            if (e.getSource() == v.getRegisterButton()) {
+            if (e.getActionCommand().equals("Register")) {
                 try {
                     model.register(mail, pass);
                     v.getErrLabel().setText("Registration success. In this instance you can't register more.");
@@ -81,30 +86,45 @@ public class InitController implements ActionListener {
                     v.getPasswordField().setText("");
                 }
             }
-            else if (e.getSource() == v.getLogButton()) {
-                try {
-                    model.logIn(mail, pass);
-                    v.setVisible(false);
-                    v.getMailField().setText("");
-                    v.getPasswordField().setText("");
-                    //starts new controller, which envokes next windows and functions of application
-                    cont.startController();
-                } catch (ConnException exception) {
-                    model.closeConnection(); //throws SQLException
-                    v.getErrLabel().setText(exception.getErrorMessage() + " Try again.");
-                    v.getPasswordField().setText("");
-                }
+            else if (e.getActionCommand().equals("Log in")) {
+                logIn(mail,pass);
             }
         }
         catch (SQLException sqlException){
             v.getErrLabel().setText("Problems with database connection. Try again");
         }
-        catch (Exception wrongCodeException){
-            v.getErrLabel().setText("Critical error. Try restarting application");
+
+    }
+    public void keyTyped(KeyEvent e){
+
+    }
+    public void keyReleased(KeyEvent e){
+
+    }
+    public void keyPressed(KeyEvent e){
+        if(e.getKeyCode() == KeyEvent.VK_ENTER){
+            try {
+                logIn(v.getMailField().getText(), String.valueOf(v.getPasswordField().getPassword()));
+            }
+            catch (SQLException sqlException){
+                v.getErrLabel().setText("Problems with database connection. Try again");
+            }
         }
-        //catch(Exception wrongCodeException){
-            //v.getErrLabel().setText("Critical error. Try restarting application");
-        //}
+    }
+
+    private void logIn(String mail, String pass) throws SQLException{
+        try {
+            model.logIn(mail, pass);
+            v.setVisible(false);
+            v.getMailField().setText("");
+            v.getPasswordField().setText("");
+            //starts new controller, which envokes next windows and functions of application
+            cont.startController();
+        } catch (ConnException exception) {
+            model.closeConnection(); //throws SQLException
+            v.getErrLabel().setText(exception.getErrorMessage() + " Try again.");
+            v.getPasswordField().setText("");
+        }
     }
 
 }

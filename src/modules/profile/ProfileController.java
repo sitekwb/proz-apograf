@@ -7,13 +7,15 @@ import data.Student;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.sql.SQLException;
 
 /**
  * Module controller class, showing and enabling to edit information my profile.
  * @see ActionListener
  */
-public class ProfileController implements ActionListener {
+public class ProfileController implements ActionListener,KeyListener {
     /**
      * Superior controller
      * @see PersonController
@@ -54,6 +56,9 @@ public class ProfileController implements ActionListener {
         for(int i=0;i<5;i++){
             view.getButton(i).addActionListener(this);
         }
+        view.getTextField(0).addKeyListener(this);
+        view.getTextField(1).addKeyListener(this);
+
 
     }
 
@@ -62,51 +67,58 @@ public class ProfileController implements ActionListener {
      * @param errMsg message set as text for password/error label in view
      * @throws ConnException unknown errors may occur
      */
-    private void setShowingSettings(String errMsg) throws ConnException{
-        for(int i=0;i<5;i++){
-            view.getButton(i).setVisible(true);
-            view.getLabel(i).setVisible(true);
-            view.getTextField(i).setVisible(false);
+    private void setShowingSettings(String errMsg)  {
+        try {
+            for (int i = 0; i < 5; i++) {
+                view.getButton(i).setVisible(true);
+                view.getLabel(i).setVisible(true);
+                view.getTextField(i).setVisible(false);
 
+            }
+            view.getLabel(0).setText(errMsg);//errLabel
+            view.getButton(0).setText("Change password");
+
+            view.getTextField(0).setText("");
+            view.getTextField(1).setText("");
+
+            view.getLabel(1).setText("Mail: " + model.getMe().getMail());
+            view.getButton(1).setText("Change mail");
+
+            view.getLabel(2).setText("Name: " + model.getMe().getName());
+
+            switch (model.getUserType()) {
+                case student:
+                    view.getButton(2).setText("Ask for change of name");
+
+                    view.getLabel(3).setText("Student ID: " + ((Student) (model.getMe())).getStudentID());
+                    view.getButton(3).setText("Ask for change of student ID");
+
+                    view.getLabel(4).setText("Degree: " + ((Student) (model.getMe())).getGenGroup());
+                    view.getButton(4).setText("Ask for change of degree");
+                    break;
+                case teacher:
+                    view.getButton(2).setText("Ask for change of name");
+
+                    view.getLabel(3).setText("Type of user: TEACHER");
+                    view.getButton(3).setVisible(false);
+
+                    view.getLabel(4).setVisible(false);
+                    view.getButton(4).setVisible(false);
+                    break;
+                case admin:
+                default:
+                    view.getButton(2).setText("Change name");
+
+                    view.getLabel(3).setText("Type of user: ADMIN");
+                    view.getButton(3).setVisible(false);
+
+                    view.getLabel(4).setVisible(false);
+                    view.getButton(4).setVisible(false);
+            }
         }
-        view.getLabel(0).setText(errMsg);//errLabel
-        view.getButton(0).setText("Change password");
-
-        view.getTextField(0).setText("");
-        view.getTextField(1).setText("");
-
-        view.getLabel(1).setText("Mail: "+model.getMe().getMail());
-        view.getButton(1).setText("Change mail");
-
-        view.getLabel(2).setText("Name: "+model.getMe().getName());
-
-        switch(model.getUserType()){
-            case student:
-                view.getButton(2).setText("Ask for change of name");
-
-                view.getLabel(3).setText("Student ID: "+((Student)(model.getMe())).getStudentID());
-                view.getButton(3).setText("Ask for change of student ID");
-
-                view.getLabel(4).setText("Degree: "+((Student)(model.getMe())).getGenGroup());
-                view.getButton(4).setText("Ask for change of degree");
-                break;
-            case teacher:
-                view.getButton(2).setText("Ask for change of name");
-
-                view.getLabel(3).setText("Type of user: TEACHER");
-                view.getButton(3).setVisible(false);
-
-                view.getLabel(4).setVisible(false);
-                view.getButton(4).setVisible(false);
-                break;
-            case admin: default:
-                view.getButton(2).setText("Change name");
-
-                view.getLabel(3).setText("Type of user: ADMIN");
-                view.getButton(3).setVisible(false);
-
-                view.getLabel(4).setVisible(false);
-                view.getButton(4).setVisible(false);
+        catch (ConnException connException) {
+            model.signOut();
+            cont.signOut();
         }
     }
 
@@ -141,66 +153,9 @@ public class ProfileController implements ActionListener {
      * @see ProfileView
      */
     public void actionPerformed(ActionEvent e){
-        String errMsg="Password: ***";
         try {
             if (e.getActionCommand().equals("Confirm")) {//pressed Confirm
-                String val = view.getTextField(0).getText();
-                switch (typeOfChange) {
-                    case 0://password
-                        if (val.equals(view.getTextField(1).getText()) &&
-                                !val.isEmpty()) {
-                            model.changePass(model.getMe(), val);
-                            errMsg = "Success! Password changed.";
-                        } else {
-                            errMsg = "Error! Not the same or empty values.";
-                        }
-                        break;
-                    case 1://mail
-
-                        if (!val.isEmpty()) {
-                            model.changeMail(model.getMe(), val);
-                            errMsg = "Success! Mail changed.";
-                        } else {
-                            errMsg = "Error! Empty value.";
-                        }
-
-                        break;
-                    case 2://name
-
-                        if (!val.isEmpty()) {
-                            if (model.getUserType() == Model.UserType.admin) {
-                                model.changeName(model.getMe(), val);
-                                errMsg = "Success! Name changed.";
-                            } else {
-                                model.askForChange(val, "name");
-                                errMsg = "Success! Asked for name change.";
-                            }
-                        } else {
-                            errMsg = "Error! Empty value.";
-                        }
-
-                        break;
-                    case 3://studentID
-
-                        if (!val.isEmpty() && isInteger(val)) {
-                            model.askForChange(val, "student_id");
-                            errMsg = "Success! Asked for student ID change.";
-                        } else {
-                            errMsg = "Error! Empty or not integer value.";
-                        }
-
-                        break;
-                    case 4:
-                    default://class
-                        if (!val.isEmpty()) {
-                            model.askForChange(val, "class");
-                            errMsg = "Success! Asked for group change.";
-                        } else {
-                            errMsg = "Error! Empty value.";
-                        }
-                        break;
-                }
-                setShowingSettings(errMsg);
+                changeValue();
             }
             else if(e.getActionCommand().equals("Cancel")) {
                 setShowingSettings("Action cancelled");
@@ -238,29 +193,93 @@ public class ProfileController implements ActionListener {
                 }
             }//actions in state showing
         }
-        catch (SQLException sqlException) {
-            try {
-                setShowingSettings("Failed. Connection Error!");
-            }
-            catch(ConnException fatalError){
-                model.signOut();
-                cont.signOut();
-            }
-        }
-        catch (ConnException connException) {
-            try {
-                setShowingSettings("Failed. " + connException.getErrorMessage());
-            }
-            catch(ConnException fatalError){
-                model.signOut();
-                cont.signOut();
-            }
-        }
         catch (Exception exception) {
             model.signOut();
             cont.signOut();
         }
 
     }//actionPerformed
+
+    public void keyTyped(KeyEvent e){
+
+    }
+    public void keyReleased(KeyEvent e){
+
+    }
+    public void keyPressed(KeyEvent e){
+        if(e.getKeyCode() == KeyEvent.VK_ENTER ){
+            changeValue();
+        }
+    }
+
+    private void changeValue() {
+        try {
+            String errMsg="Password: ***";
+            String val = view.getTextField(0).getText();
+            switch (typeOfChange) {
+                case 0://password
+                    if (val.equals(view.getTextField(1).getText()) &&
+                            !val.isEmpty()) {
+                        model.changePass(model.getMe(), val);
+                        errMsg = "Success! Password changed.";
+                    } else {
+                        errMsg = "Error! Not the same or empty values.";
+                    }
+                    break;
+                case 1://mail
+
+                    if (!val.isEmpty()) {
+                        model.changeMail(model.getMe(), val);
+                        errMsg = "Success! Mail changed.";
+                    } else {
+                        errMsg = "Error! Empty value.";
+                    }
+
+                    break;
+                case 2://name
+
+                    if (!val.isEmpty()) {
+                        if (model.getUserType() == Model.UserType.admin) {
+                            model.changeName(model.getMe(), val);
+                            errMsg = "Success! Name changed.";
+                        } else {
+                            model.askForChange(val, "name");
+                            errMsg = "Success! Asked for name change.";
+                        }
+                    } else {
+                        errMsg = "Error! Empty value.";
+                    }
+
+                    break;
+                case 3://studentID
+
+                    if (!val.isEmpty() && isInteger(val)) {
+                        model.askForChange(val, "student_id");
+                        errMsg = "Success! Asked for student ID change.";
+                    } else {
+                        errMsg = "Error! Empty or not integer value.";
+                    }
+
+                    break;
+                case 4:
+                default://class
+                    if (!val.isEmpty()) {
+                        model.askForChange(val, "class");
+                        errMsg = "Success! Asked for group change.";
+                    } else {
+                        errMsg = "Error! Empty value.";
+                    }
+                    break;
+            }
+            setShowingSettings(errMsg);
+        }
+        catch(ConnException connException){
+            setShowingSettings(connException.getErrorMessage());
+        }
+        catch (Exception exception) {
+            model.signOut();
+            cont.signOut();
+        }
+    }
 
 }

@@ -12,6 +12,7 @@ public class Main {
      * @param args unused arguments
      */
     public static void main(String [] args){
+
         Controller controller = new Controller(new Model());
     }
 }

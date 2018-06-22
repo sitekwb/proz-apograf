@@ -590,7 +590,7 @@ public class Model {
      */
     public ArrayList<Student> getAttendance(Group group) throws SQLException{
         Statement stat = conn.createStatement();
-        String query = "SELECT Students.id, Students.name, date, present FROM Attendance " +
+        String query = "SELECT Attendance.id, Students.id, Students.name, date, present FROM Attendance " +
                 "INNER JOIN Students ON Attendance.student=Students.id WHERE ";
         if(userType==UserType.student){
             query += "Students.id="+me.getId()+" AND ";
@@ -599,7 +599,7 @@ public class Model {
 
         ResultSet result = stat.executeQuery(query);
         ArrayList<Student> students = new ArrayList<Student>();
-        for(int i=0;i<27;i++){
+        while(true){
             try {
                 Student student = new Student(result, true);
                 students.add(student);
@@ -622,8 +622,8 @@ public class Model {
         Statement stat = conn.createStatement();
         String query = "";
         for(Student student: students){
-            query = "UPDATE Attendance SET present = "+student.getAttendance().isPresent()+" WHERE student="+student.getId()+
-                    " AND class="+group.getId()+" AND date='"+student.getAttendance().getDate()+"';\n";
+            query = "UPDATE Attendance SET present = "+student.getAttendance().isPresent()+", date='"+
+                    student.getAttendance().getDate()+"' WHERE id="+student.getAttendance().getId()+";\n";
             stat.executeUpdate(query);
         }
         stat.close();

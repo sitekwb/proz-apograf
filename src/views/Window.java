@@ -1,9 +1,12 @@
 package views;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Class from View part of MVC model, inherited by all other view classes.
@@ -39,6 +42,7 @@ public class Window extends JFrame {
      */
     public static int buttonArraySize;
 
+    public static Image image;
     /**
      * Get method for items of menu, created in constructor.
      * It makes use of {@link Window#buttonArray} and {@link Window.MenuButtons}.
@@ -94,11 +98,11 @@ public class Window extends JFrame {
         profileButton = new JMenuItem();
         profileButton.setFont(new Font("Times New Roman",Font.PLAIN,30));
 
-
-
+        setTitle("Apograf");
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds(0,0,(int)screenSize.getWidth(),(int)screenSize.getHeight());
-        setMinimumSize(new Dimension((int)screenSize.getWidth(),(int)screenSize.getHeight()));
+        setIconImage(image);
+        setBounds(0,0,(int)screenSize.getWidth()*7/8,(int)screenSize.getHeight());
+        setMinimumSize(new Dimension(1064,768));
 
 
         addWindowListener(new WindowAdapter(){

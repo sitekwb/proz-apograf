@@ -2,6 +2,9 @@ package mains.controllers;
 
 import init.InitController;
 import mains.Model;
+import views.Window;
+
+import javax.swing.*;
 
 /**
  * Class controlling and coordinating work of {@link Model} and View from MVC model of programming in Java.
@@ -22,6 +25,7 @@ public class Controller {
      * @param mod value set to private field of type {@link Model}.
      */
     public Controller(Model mod) {
+        Window.image = new ImageIcon(getClass().getResource("../../images/icon.png")).getImage();
         model=mod;
         initController = new InitController(this, model);
     }

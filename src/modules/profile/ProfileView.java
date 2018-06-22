@@ -91,10 +91,6 @@ public class ProfileView extends views.Window {
             layout.addLayoutComponent("Button "+(i+1),jButton[i]);
         }
 
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setSize(400,400);
-        setMinimumSize(new Dimension(400,400));
-        setMaximumSize(new Dimension((int)screenSize.getWidth(),(int)screenSize.getHeight()));
 
 
         setVisible(true);

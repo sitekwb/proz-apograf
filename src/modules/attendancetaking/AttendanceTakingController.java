@@ -125,7 +125,7 @@ public class AttendanceTakingController implements ActionListener {
      * @param d date of format DD-MM-YYYY
      * @return true if is correct date, false if not
      */
-    private boolean isDate(String d){
+    private static boolean isDate(String d){
         int day, month,year;
         try {
             day = Integer.parseInt(d.substring(0, 1));
@@ -141,6 +141,12 @@ public class AttendanceTakingController implements ActionListener {
         }
         return true;
     }
+    private static Date toDate(String d){
+        int day = Integer.parseInt(d.substring(0, 2));
+        int month = Integer.parseInt(d.substring(3, 5));
+        int year = Integer.parseInt(d.substring(6, 10));
+        return new Date(year-1900,month-1,day);
+    }
 
     /**
      * ActionPerformed method.
@@ -154,17 +160,30 @@ public class AttendanceTakingController implements ActionListener {
             view.setVisible(false);
         }
         else if(e.getActionCommand().equals("Confirm")){
-            JLabel text = new JLabel("What is the date of classes? (DD-MM-YYYY)");
-            text.setFont(new Font("Times New Roman", Font.PLAIN, 40));
-            String calendar = JOptionPane.showInputDialog(text,text);
-            while(!isDate(calendar)){
-                text.setText("Error, so AGAIN! What is the date of classes? (DD-MM-YYYY)");
-                calendar = JOptionPane.showInputDialog(text,text);
+            JTextField field = new JTextField();
+            field.setFont(new Font("Times New Roman", Font.PLAIN, 40));
+
+            JPanel panel = new JPanel(new BorderLayout(0, 0));
+
+            JLabel label = new JLabel("What is the date of classes? (DD-MM-YYYY)");
+            label.setFont(new Font("Times New Roman", Font.PLAIN, 40));
+
+            panel.add(label, BorderLayout.NORTH);
+            panel.add(field, BorderLayout.SOUTH);
+
+            int dialogResult = JOptionPane.showConfirmDialog (null, panel);
+            String calendar = field.getText();
+            while(dialogResult == JOptionPane.YES_OPTION && !isDate(calendar)){
+                label.setText("Error, so AGAIN! What is the date of classes? (DD-MM-YYYY)");
+                field.setText("");
+                dialogResult = JOptionPane.showConfirmDialog (null, panel);
+                calendar= field.getText();
             }
-            int day = Integer.parseInt(calendar.substring(0, 2));
-            int month = Integer.parseInt(calendar.substring(3, 5));
-            int year = Integer.parseInt(calendar.substring(6, 10));
-            Date date = new Date(year-1900,month-1,day);
+            if(dialogResult != JOptionPane.YES_OPTION){
+                return ;
+            }
+
+            Date date = toDate(calendar);
 
             int i=0;
             for(Student student: students){

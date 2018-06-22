@@ -34,6 +34,9 @@ public class Student extends Person{
         name = nameN;
         student_id = student_idN;
         genGroup = genGroupN;
+        if(genGroup==null){
+            genGroup = "";
+        }
 
     }
 
@@ -57,6 +60,9 @@ public class Student extends Person{
         name = result.getString("Students.name");
         student_id = result.getInt("Students.student_id");
         genGroup = result.getString("Students.gen_class");
+        if(genGroup==null){
+            genGroup = "";
+        }
     }
 
     /**
@@ -69,8 +75,9 @@ public class Student extends Person{
         result.next();
         id = result.getInt("Students.id");
         name = result.getString("Students.name");
+        genGroup="";
         if(attendanceFlag){
-            attendance = new Attendance(result.getDate("date"), result.getBoolean("present"));
+            attendance = new Attendance(result.getInt("Attendance.id"), result.getDate("date"), result.getBoolean("present"));
         }
     }
 

@@ -2,15 +2,21 @@ package modules.attendance;
 
 import data.Group;
 import data.Student;
+import exceptions.ConnException;
 import mains.Model;
 import mains.controllers.PersonController;
 import modules.myclasses.MyClassesController;
 
+import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 
 /**
  * Module controller class, showing and enabling to change attendance of students of given group.
@@ -73,6 +79,15 @@ public class AttendanceController implements ActionListener {
             view.getConfirmButton().setEnabled(false);
             view.getTable().setEnabled(false);
         }
+
+        JTextField textField = new JTextField();
+        textField.setFont(new Font("Times New Roman", Font.PLAIN, 30));
+        textField.setBorder(new LineBorder(Color.BLACK));
+        DefaultCellEditor dce = new DefaultCellEditor( textField );
+        for(int i=0; i<view.getTable().getColumnCount()-1;i++) {//the last is bool: present/not-present
+            view.getTable().getColumnModel().getColumn(i).setCellEditor(dce);
+        }
+
         view.getCancelButton().addActionListener(this);
         view.getConfirmButton().addActionListener(this);
         view.getRefreshButton().addActionListener(this);
@@ -94,10 +109,35 @@ public class AttendanceController implements ActionListener {
         for (Student student : students) {
             view.getTable().getModel().setValueAt(student.getName(), i, 0);
             view.getTable().getModel().setValueAt(student.getAttendance().getDate(), i, 1);
-            view.getTable().getModel().setValueAt(student.getAttendance().isPresent(), i, 2);
+            view.getTable().getModel().setValueAt(student.getAttendance().getDay(), i, 2);
+            view.getTable().getModel().setValueAt(student.getAttendance().isPresent(), i, 3);
             i++;
         }
 
+    }
+
+    private static boolean isDate(String d){
+        int day, month,year;
+        try {
+            year = Integer.parseInt(d.substring(0, 4));
+            month = Integer.parseInt(d.substring(5, 7));
+            day = Integer.parseInt(d.substring(8, 10));
+
+            new GregorianCalendar(year,month-1,day);
+        }
+        catch(Exception e){
+            return false;
+        }
+        if(d.charAt(4)!='-' || d.charAt(7)!='-' || d.length()!=10){
+            return false;
+        }
+        return true;
+    }
+    private static Date toDate(String d){
+        int year = Integer.parseInt(d.substring(0, 4));
+        int month = Integer.parseInt(d.substring(5, 7));
+        int day = Integer.parseInt(d.substring(8, 10));
+        return new Date(year-1900,month-1,day);
     }
 
     /**
@@ -126,19 +166,23 @@ public class AttendanceController implements ActionListener {
         }
         else if(e.getActionCommand().equals("Confirm")){
             int i=0;
-            for(Student student: students){
-                student.getAttendance().setPresent((boolean)(view.getTable().getValueAt(i,2)));
-                i++;
-                if (i >= 27) {
-                    break;
+            try {
+                for (Student student : students) {
+                    if (!isDate(view.getTable().getValueAt(i, 1).toString())) {
+                        throw new ConnException(ConnException.ErrorTypes.err);
+                    }
+                    student.getAttendance().setDate(toDate(view.getTable().getValueAt(i, 1).toString()));
+                    student.getAttendance().setPresent((boolean) (view.getTable().getValueAt(i, 3)));
+                    i++;
                 }
-            }
-            try{
                 model.updateAttendance(students, group);
                 view.getErrLabel().setText("Success! Attendance taken");
             }
             catch(SQLException sqlException){
                 view.getErrLabel().setText("Error. Try again.");
+            }
+            catch(ConnException connException){
+                view.getErrLabel().setText("Wrong value in column no."+(i+1)+". Try again");
             }
 
         }

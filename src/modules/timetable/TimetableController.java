@@ -11,28 +11,70 @@ import modules.mystudentsteachers.MyStudentsTeachersView;
 import views.Window;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+
+
+/**
+ * Module controller class, showing timetable.
+ * @see ActionListener
+ */
 public class TimetableController implements ActionListener {
+    /**
+     * View, initialised by constructor.
+     * @see TimetableView
+     */
     private TimetableView view;
+    /**
+     * Superior controller
+     * @see PersonController
+     */
     private PersonController cont;
+    /**
+     * Reference to model
+     * @see Model
+     */
     private Model model;
+    /**
+     * ArrayList of groups
+     */
     private ArrayList<Group> groups;
+
+    /**
+     * Get method
+     * @return {@link #view}
+     */
     public Window getView() {
         return view;
     }
 
+    /**
+     * Public class constructor
+     * @param controller controller
+     * @param mod model
+     */
     public TimetableController(PersonController controller, Model mod){
         view = new TimetableView();
         cont = controller;
         model = mod;
 
         DefaultTableModel tableModel = ((DefaultTableModel)(view.getTable().getModel()));
+
+        JTextField textField = new JTextField();
+        textField.setFont(new Font("Times New Roman", Font.PLAIN, 30));
+        textField.setBorder(new LineBorder(Color.BLACK));
+        DefaultCellEditor dce = new DefaultCellEditor( textField );
+        for(int i=0; i<view.getTable().getColumnCount();i++) {
+            view.getTable().getColumnModel().getColumn(i).setCellEditor(dce);
+        }
+
         view.getConfirmButton().setEnabled(false);
         view.getTable().setEnabled(false);
         try {
@@ -48,6 +90,10 @@ public class TimetableController implements ActionListener {
         view.setVisible(true);
 
     }
+    /**
+     * Gets information from model and shows appropriate groups in table.
+     * @throws SQLException if something goes wrong in connection with database.
+     */
 
     private void show() throws SQLException {
         groups = model.getTimetable();

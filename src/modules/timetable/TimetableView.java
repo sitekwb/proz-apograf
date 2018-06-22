@@ -3,6 +3,11 @@ package modules.timetable;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Appropriate view to TimetableController.
+ * @see TimetableController
+ * @see views.Window
+ */
 public class TimetableView extends views.Window {
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton confirmButton;
@@ -12,24 +17,55 @@ public class TimetableView extends views.Window {
     private JButton refreshButton;
     private javax.swing.JLabel classLabel;
     private javax.swing.JLabel title1;
-
+    /**
+     * Get method.
+     * @return cancelButton
+     */
     JButton getCancelButton(){
         return cancelButton;
     }
+
+    /**
+     * Get method.
+     * @return classLabel.
+     */
     JLabel getClassLabel(){
         return classLabel;
     }
+
+    /**
+     * Get method.
+     * @return confirmButton
+     */
     JButton getConfirmButton(){
         return confirmButton;
     }
+
+    /**
+     * Get method.
+     * @return errLabel
+     */
     JLabel getErrLabel(){
         return errLabel;
     }
+
+    /**
+     * Get method.
+     * @return refreshButton
+     */
     JButton getRefreshButton(){
         return refreshButton;
     }
+
+    /**
+     * Get method.
+     * @return table
+     */
     JTable getTable(){ return jTable; }
 
+    /**
+     * Class constructor
+     */
     public TimetableView(){
         refreshButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();

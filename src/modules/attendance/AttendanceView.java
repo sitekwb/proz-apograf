@@ -103,14 +103,14 @@ public class AttendanceView extends views.Window {
 
                 },
                 new String [] {
-                        "Student's name", "Date", "Present"
+                        "Student's name", "Date", "Day of week", "Present"
                 }
         ) {
             Class[] types = new Class [] {
-                    java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
+                    java.lang.String.class, java.lang.String.class, String.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
-                    false, false, true
+                    false, true, false, true
             };
 
             public Class getColumnClass(int columnIndex) {

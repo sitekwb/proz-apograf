@@ -105,34 +105,31 @@ public class Group {
         return value;
     }
 
+    public static String getDay(int day){
+        switch(day){
+            case 1:
+                return "Monday";
+            case 2:
+                return "Tuesday";
+            case 3:
+                return "Wednesday";
+            case 4:
+                return "Thursday";
+            case 5:
+                return "Friday";
+            case 6:
+                return "Saturday";
+            case 7: default:
+                return "Sunday";
+        }
+    }
+
     /**
      * Get method for time, giving full {@link java.lang.String} information about day and time of lessons in this group.
      * @return String format of day of week concatenated with return of time of start and finish {@link Group#getTime()}.
      */
     public String getSchedule(){
-        String value;
-        switch(day){
-            case 1:
-                value = "Monday";
-                break;
-            case 2:
-                value = "Tuesday";
-                break;
-            case 3:
-                value = "Wednesday";
-                break;
-            case 4:
-                value = "Thursday";
-                break;
-            case 5:
-                value = "Friday";
-                break;
-            case 6:
-                value = "Saturday";
-                break;
-            case 7: default:
-                value = "Sunday";
-        }
+        String value = getDay(day);
         value+=" "+getTime();
         return value;
     }

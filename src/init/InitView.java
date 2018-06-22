@@ -1,7 +1,11 @@
 package init;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * @author Wojciech Sitek
@@ -102,14 +106,15 @@ public class InitView extends JFrame {
      *
      */
     public InitView(){
-        super("Logging window");
+        super("Apograf - logging window");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds((int)screenSize.getWidth()/3,(int)screenSize.getHeight()/4,
-                (int)screenSize.getWidth()/3,(int)screenSize.getHeight()*5/8);
+        setIconImage(new ImageIcon(getClass().getResource("../images/icon.png")).getImage());
+        setBounds((int)screenSize.getWidth()/3,(int)screenSize.getHeight()/5,
+                (int)screenSize.getWidth()/3,(int)screenSize.getHeight()*3/4);
         setMinimumSize(new Dimension((int)screenSize.getWidth()/3,(int)screenSize.getHeight()*5/8));
-        setMaximumSize(new Dimension((int)screenSize.getWidth()/3,(int)screenSize.getHeight()*5/8));
+        setMaximumSize(new Dimension((int)screenSize.getWidth(),(int)screenSize.getHeight()));
 
         title = new JLabel();
         mailField = new JTextField();

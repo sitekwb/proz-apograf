@@ -10,11 +10,13 @@ import mains.controllers.PersonController;
 
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -68,6 +70,9 @@ public class MyStudentsTeachersController implements ActionListener {
         model = mod;
 
         DefaultTableModel tableModel = ((DefaultTableModel)(view.getTable().getModel()));
+
+
+
         if(model.getUserType()==Model.UserType.student){
             tableModel.addColumn("Class");
             tableModel.addColumn("Class date");
@@ -101,6 +106,14 @@ public class MyStudentsTeachersController implements ActionListener {
         }
         catch(SQLException e){
             view.getErrLabel().setText("Error in connection. Try again.");
+        }
+
+        JTextField textField = new JTextField();
+        textField.setFont(new Font("Times New Roman", Font.PLAIN, 30));
+        textField.setBorder(new LineBorder(Color.BLACK));
+        DefaultCellEditor dce = new DefaultCellEditor( textField );
+        for(int i=0; i<view.getTable().getColumnCount();i++) {
+            view.getTable().getColumnModel().getColumn(i).setCellEditor(dce);
         }
 
 
@@ -191,12 +204,12 @@ public class MyStudentsTeachersController implements ActionListener {
 
                     if(wantStudentsFlag){
                         if (person instanceof Student){
-                            String newStudentID = (String)view.getTable().getValueAt(i,3);
+                            String newStudentID = (view.getTable().getValueAt(i,3)==null)?"":view.getTable().getValueAt(i,3).toString();;
                             if(! ((Student) person).getStudentID().equals( newStudentID )){
                                 model.changeStudentID((Student)person, Integer.parseInt(newStudentID ));
                                 ((Student) person).setStudentID(Integer.parseInt(newStudentID));
                             }
-                            String newGenGroup = (String)view.getTable().getValueAt(i,4);
+                            String newGenGroup = (view.getTable().getValueAt(i,4)==null)?"":view.getTable().getValueAt(i,4).toString();
                             if(! ((Student) person).getGenGroup().equals( newGenGroup )){
                                 model.changeGenGroup((Student)person, newGenGroup );
                                 ((Student) person).setGenGroup(newGenGroup);
@@ -214,21 +227,65 @@ public class MyStudentsTeachersController implements ActionListener {
                             if(connExc.getErrorType()!=ConnException.ErrorTypes.notExitsting){
                                 throw connExc;
                             }
-                            JLabel text = new JLabel("What is the day of new class "+newGroup+"? (1-7, 1=Monday)");
-                            text.setFont(new Font("Times New Roman", Font.PLAIN, 40));
-                            int day = Integer.parseInt(JOptionPane.showInputDialog(text,text));
-                            if( day<1 || day>7){
+
+                            JTextField field = new JTextField();
+                            field.setFont(new Font("Times New Roman", Font.PLAIN, 40));
+
+                            JPanel panel = new JPanel(new BorderLayout(0, 0));
+
+                            JLabel label = new JLabel("What is the day of new class "+newGroup+"? (1-7, 1=Monday)");
+                            label.setFont(new Font("Times New Roman", Font.PLAIN, 40));
+
+                            panel.add(label, BorderLayout.NORTH);
+                            panel.add(field, BorderLayout.SOUTH);
+
+                            int dialogResult = JOptionPane.showConfirmDialog (null, panel);
+                            String result = field.getText();
+                            boolean intFlag=true;
+                            int day=0;
+                            try{
+                                day = Integer.parseInt(result);
+                            }
+                            catch(NumberFormatException numberFormatException){
+                                intFlag=false;
+                            }
+                            while(dialogResult == JOptionPane.YES_OPTION && !(intFlag && day>=1 && day<=7)){
+                                label.setText("Error, so AGAIN! What is the day of new class "+newGroup+"? (1-7, 1=Monday)");
+                                field.setText("");
+                                dialogResult = JOptionPane.showConfirmDialog (null, panel);
+                                result= field.getText();
+                                try{
+                                    day = Integer.parseInt(result);
+                                }
+                                catch(NumberFormatException numberFormatException){
+                                    intFlag=false;
+                                }
+                            }
+
+                            if(dialogResult != JOptionPane.YES_OPTION){
                                 i++;
                                 continue;
                             }
-                            text.setText("What is the start hour and finish hour of new class "+newGroup+"? (hh:mm-hh:mm)");
-                            String time = JOptionPane.showInputDialog(text,text);
-
-                            Group group;
-                            try{
-                                group = new Group(newGroup, day, time);
+                            //time
+                            label.setText("What is the start hour and finish hour of new class "+newGroup+"? (hh:mm-hh:mm)");
+                            field.setText("");
+                            dialogResult = JOptionPane.showConfirmDialog (null, panel);
+                            String time = field.getText();
+                            Group group = null;
+                            while(dialogResult == JOptionPane.YES_OPTION){
+                                try{
+                                    group = new Group(newGroup, day, time);
+                                }
+                                catch(Exception exception) {
+                                    label.setText("Error, so AGAIN! What is the start hour and finish hour of new class "+newGroup+"? (hh:mm-hh:mm)");
+                                    field.setText("");
+                                    dialogResult = JOptionPane.showConfirmDialog(null, panel);
+                                    time = field.getText();
+                                    continue;
+                                }
+                                break;
                             }
-                            catch(Exception exception){
+                            if(dialogResult != JOptionPane.YES_OPTION){
                                 i++;
                                 continue;
                             }

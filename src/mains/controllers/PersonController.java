@@ -1,5 +1,6 @@
 package mains.controllers;
 
+import data.Student;
 import mains.Model;
 import modules.myclasses.MyClassesController;
 import modules.mystudentsteachers.MyStudentsTeachersController;
@@ -102,6 +103,15 @@ public class PersonController implements ActionListener {
                 for (int i = 0; i < Window.buttonArraySize; i++) {
                     window.getMenuItem(i).addActionListener(this);
                 }
+
+                if(model.getUserType() == Model.UserType.student){
+                    window.getMenuItem(MenuButtons.myStudents).setEnabled(false);
+                    window.getMenuItem(MenuButtons.takeAttendance).setEnabled(false);
+                }
+                else if(model.getUserType() == Model.UserType.teacher){
+                    window.getMenuItem(Window.MenuButtons.myTeachers).setEnabled(false);
+                }
+
                 oldWindow.setVisible(false);
             }
         }
